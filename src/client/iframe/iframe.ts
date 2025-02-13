@@ -8,7 +8,7 @@ export class Iframe {
     this.iframeConfig = iframeConfig;
   }
 
-  public make(): HTMLIFrameElement {
+  public make(parent: HTMLElement): HTMLIFrameElement {
     const iframe = document.createElement("iframe");
     iframe.src = this.iframeConfig.url.toString();
 
@@ -30,6 +30,8 @@ export class Iframe {
     });
 
     this.element = iframe;
+
+    parent.appendChild(this.element);
 
     return this.element;
   }

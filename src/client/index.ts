@@ -6,13 +6,13 @@ import { ErrorLogger } from "@sdk/client/logger/error-logger";
 
 import { Iframe } from "@sdk/client/iframe/iframe";
 import { IframeConfig } from "@sdk/client/iframe/iframe-config";
-import { IframeMessageManager } from "@sdk/client/iframe/iframe-message-manager";
+import { IframeEventManager } from "@sdk/client/iframe/iframe-event-manager";
 
 export class Client implements ClientInterface {
   private readonly errorLogger = new ErrorLogger();
   private readonly iframe: Iframe;
   private readonly iframeConfig: IframeConfig;
-  private readonly iframeMessageManager: IframeMessageManager;
+  private readonly iframeEventManager: IframeEventManager;
 
   public ready: boolean = false;
   private readonly onReady: () => void;
@@ -26,10 +26,11 @@ export class Client implements ClientInterface {
 
     this.iframeConfig = new IframeConfig(options.publicKey);
     this.iframe = new Iframe(this.iframeConfig);
-    this.iframeMessageManager = new IframeMessageManager({
-      onMessage: this.messageHandler.bind(this),
+    this.iframeEventManager = new IframeEventManager({
       iframe: this.iframe,
       iframeConfig: this.iframeConfig,
+      onSuccess: this.onSuccess,
+      onError: this.onError,
     });
 
     // Return if the public key is not provided, another instance will have to be created
@@ -37,18 +38,17 @@ export class Client implements ClientInterface {
       !this.options.publicKey ||
       !this.options.publicKey.trim().startsWith("pub_")
     ) {
-      this.onError({
-        reason: ErrorReasons.INVALID_API_KEY,
-        additionalData: {
+      this.onError(
+        new OneClickError(ErrorReasons.INVALID_API_KEY, {
           name: "InvalidApiKey",
-          message: "Public key is required",
+          message: "Invalid API key",
           code: 400,
           className: "InvalidApiKey",
           data: {
             errorCode: "INVALID_API_KEY",
           },
-        },
-      });
+        })
+      );
       return;
     }
 
@@ -61,43 +61,21 @@ export class Client implements ClientInterface {
   }
 
   public show(element: HTMLElement): void {
+    // Return if the iframe is already created, callback with error
     if (this.iframe.element) {
-      const error: OneClickError = {
-        reason: ErrorReasons.DUPLICATE_IFRAME_ATTEMPT,
-        additionalData: {
-          name: "DuplicateIframe",
-          message: "SDK iframe already exists",
-          code: 400,
-          className: "DuplicateIframe",
-          data: {
-            errorCode: "DUPLICATE_IFRAME_ATTEMPT",
-          },
-        },
-      };
+      const error = new OneClickError(ErrorReasons.DUPLICATE_IFRAME_ATTEMPT);
       this.errorLogger.log(error);
       this.onError(error);
       return;
     }
-
-    element.appendChild(this.iframe.make());
-
-    this.iframeMessageManager.addListener();
+    this.iframe.make(element);
+    this.iframeEventManager.addListener();
   }
 
   public destroy(): void {
-    this.iframeMessageManager.removeListener();
+    this.iframeEventManager.removeListener();
     this.iframe.dispose();
   }
-
-  private messageHandler = (event: MessageEvent) => {
-    const data = event.data;
-    console.log("message event from iframe arrived", data);
-    if (data.type === "success") {
-      this.onSuccess(data.payload);
-    } else if (data.type === "error") {
-      this.onError(data.payload);
-    }
-  };
 }
 
 // Create the VerifiedInc namespace and attach to window

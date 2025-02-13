@@ -1,17 +1,5 @@
-import { ErrorReasons, PossibleEventTypes } from "@sdk/values";
-
-export interface OneClickError {
-  reason: (typeof ErrorReasons)[keyof typeof ErrorReasons];
-  additionalData: {
-    name: string;
-    message: string;
-    code: number;
-    className: string;
-    data: {
-      errorCode: string;
-    };
-  };
-}
+import { PossibleEventTypes } from "@sdk/values";
+export { OneClickError } from "@sdk/errors/one-click-error";
 
 export interface OneClickResponseData {
   // Add response data fields here as needed

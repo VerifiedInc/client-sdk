@@ -1,9 +1,7 @@
-// Import your SDK here
-import * as VerifiedInc from "@sdk/index";
+import { Client, OneClickResponseData, OneClickError } from "@sdk/index";
 
 function main() {
-  // Your development code here
-  const sdk = new VerifiedInc.Client({
+  const sdk = new Client({
     publicKey: "pub_test-key",
     onReady: handleReadySDK,
     onSuccess: handleSuccess,
@@ -15,13 +13,11 @@ function main() {
     sdk.show(document.body);
   }
 
-  function handleSuccess(
-    oneClickSuccessData: VerifiedInc.OneClickResponseData
-  ) {
+  function handleSuccess(oneClickSuccessData: OneClickResponseData) {
     console.log("VerifiedInc Client SDK success:", oneClickSuccessData);
   }
 
-  function handleError(error: VerifiedInc.OneClickError) {
+  function handleError(error: OneClickError) {
     console.error(error);
   }
 }
