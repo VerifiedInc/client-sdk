@@ -1,6 +1,6 @@
 import { ErrorReasons } from "@sdk/values";
 
-interface ErrorAdditionalData {
+export interface ErrorAdditionalData {
   name: string;
   message: string;
   code: number;
@@ -12,11 +12,11 @@ interface ErrorAdditionalData {
 
 export class OneClickError extends Error {
   public readonly reason: (typeof ErrorReasons)[keyof typeof ErrorReasons];
-  public readonly additionalData?: ErrorAdditionalData;
+  public readonly additionalData?: ErrorAdditionalData | null;
 
   constructor(
     reason: (typeof ErrorReasons)[keyof typeof ErrorReasons],
-    additionalData?: ErrorAdditionalData
+    additionalData?: ErrorAdditionalData | null
   ) {
     super(additionalData?.message || reason);
     this.reason = reason;

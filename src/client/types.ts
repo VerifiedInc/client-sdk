@@ -19,7 +19,7 @@ export interface ClientInterface {
 
 declare global {
   interface Window {
-    VerifiedInc: {
+    Verified: {
       Client: new (options: ClientOptions) => ClientInterface;
     };
   }

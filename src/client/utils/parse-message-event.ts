@@ -20,7 +20,7 @@ export function parseMessageEvent(
 
   // Validate the data
   const isValid =
-    data.source === "VerifiedInc.Client" &&
+    data.source === "Verified.Client" &&
     typeof data.timestamp === "number" &&
     typeof data.type === "string" &&
     Object.values(PossibleEventTypes).includes(data.type) &&

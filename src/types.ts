@@ -8,6 +8,6 @@ export interface OneClickResponseData {
 export interface ClientMessageEvent {
   type: (typeof PossibleEventTypes)[keyof typeof PossibleEventTypes];
   data: Record<string, unknown> | null;
-  source: "VerifiedInc.Client";
+  source: "Verified.Client";
   timestamp: number;
 }

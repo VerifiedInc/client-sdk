@@ -1,10 +1,12 @@
-import { parseMessageEvent } from "@sdk/client/utils";
+import { ClientMessageEvent } from "@sdk/types";
+
+import { parseMessageEvent } from "@sdk/client/utils/parse-message-event";
 import { ErrorLogger } from "@sdk/client/logger/error-logger";
+import { Iframe } from "@sdk/client/iframe/iframe";
 import { IframeConfig } from "@sdk/client/iframe/iframe-config";
-import { Iframe } from "./iframe";
 
 interface IframeMessageManagerOptions {
-  onMessage: (event: MessageEvent) => void;
+  onMessage: (data: ClientMessageEvent, event: MessageEvent) => void;
   iframe: Iframe;
   iframeConfig: IframeConfig;
 }
@@ -13,7 +15,10 @@ export class IframeMessageManager {
   private readonly logger = new ErrorLogger();
   private readonly iframe: Iframe;
   private readonly iframeConfig: IframeConfig;
-  private readonly onMessage: (event: MessageEvent) => void;
+  private readonly onMessage: (
+    data: ClientMessageEvent,
+    event: MessageEvent
+  ) => void;
 
   constructor({
     onMessage,
@@ -64,6 +69,6 @@ export class IframeMessageManager {
     if (messageTime < secondAgo) return;
 
     // After all checks are passed, call the onMessage handler
-    this.onMessage(event);
+    this.onMessage(data, event);
   };
 }

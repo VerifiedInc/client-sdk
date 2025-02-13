@@ -78,18 +78,18 @@ export class Client implements ClientInterface {
   }
 }
 
-// Create the VerifiedInc namespace and attach to window
-const VerifiedInc = {
+// Create the Verified namespace and attach to window
+const Verified = {
   Client: Client,
 };
 
 // If running in the browser, attach to window
 if (typeof window !== "undefined") {
-  if (!window.VerifiedInc) {
-    window.VerifiedInc = VerifiedInc;
+  if (!window.Verified) {
+    window.Verified = Verified;
   } else {
-    window.VerifiedInc.Client = VerifiedInc.Client;
+    window.Verified.Client = Verified.Client;
   }
 }
 
-export default VerifiedInc;
+export default Verified;

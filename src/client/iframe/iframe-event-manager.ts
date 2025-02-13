@@ -1,4 +1,10 @@
-import { OneClickError, OneClickResponseData } from "@sdk/types";
+import {
+  ClientMessageEvent,
+  OneClickError,
+  OneClickResponseData,
+} from "@sdk/types";
+
+import { ErrorAdditionalData } from "@sdk/errors/one-click-error";
 
 import { Iframe } from "@sdk/client/iframe/iframe";
 import { IframeConfig } from "@sdk/client/iframe/iframe-config";
@@ -19,7 +25,7 @@ export class IframeEventManager {
     this.iframeMessageManager = new IframeMessageManager({
       iframe: options.iframe,
       iframeConfig: options.iframeConfig,
-      onMessage: this.onMessage.bind(this),
+      onMessage: this.handleMessage.bind(this),
     });
     this.onSuccess = options.onSuccess;
     this.onError = options.onError;
@@ -33,13 +39,19 @@ export class IframeEventManager {
     this.iframeMessageManager.removeListener();
   }
 
-  private readonly onMessage = (event: MessageEvent) => {
-    const data = event.data;
-    console.log("message event from iframe arrived", data);
-    if (data.type === "success") {
-      this.onSuccess(data.payload);
-    } else if (data.type === "error") {
-      this.onError(data.payload);
+  private handleMessage(data: ClientMessageEvent): void {
+    switch (data.type) {
+      case "VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION":
+        this.onSuccess(data);
+        break;
+      case "VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION_ERROR":
+        this.onError(
+          new OneClickError(
+            "UNKNOWN_ERROR",
+            data.data as unknown as ErrorAdditionalData
+          )
+        );
+        break;
     }
-  };
+  }
 }

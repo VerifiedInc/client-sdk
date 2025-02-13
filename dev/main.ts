@@ -14,11 +14,11 @@ function main() {
   }
 
   function handleSuccess(oneClickSuccessData: OneClickResponseData) {
-    console.log("VerifiedInc Client SDK success:", oneClickSuccessData);
+    console.log("Verified Client SDK success:", oneClickSuccessData);
   }
 
   function handleError(error: OneClickError) {
-    console.error(error);
+    console.error(error.reason, error.additionalData);
   }
 }
 

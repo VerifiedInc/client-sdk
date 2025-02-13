@@ -21,7 +21,7 @@ export default defineConfig(({ command }) => {
     build: {
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
-        name: "VerifiedInc.Client",
+        name: "Verified.Client",
         fileName: (format) => `index.${format}.js`,
         formats: ["esm", "umd"],
       },

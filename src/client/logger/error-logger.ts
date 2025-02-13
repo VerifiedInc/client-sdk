@@ -1,5 +1,5 @@
 export class ErrorLogger {
-  private readonly logName = "VerifiedInc Client SDK";
+  private readonly logName = "Verified Client SDK";
 
   constructor() {}
 

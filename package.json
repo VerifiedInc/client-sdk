@@ -1,9 +1,9 @@
 {
   "private": true,
-  "name": "client-sdk",
+  "name": "@verifiedinc/client-sdk",
   "version": "0.0.1",
   "description": "A repo to house our client SDK",
-  "author": "VerifiedInc",
+  "author": "Verified",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "jsnext:main": "./dist/index.esm.js",
