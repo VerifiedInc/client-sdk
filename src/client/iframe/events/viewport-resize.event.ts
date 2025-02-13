@@ -20,7 +20,7 @@ export class ViewportResizeEvent {
    * The width is handled through CSS and remains responsive.
    * @param boundingRect - The DOMRect containing the new dimensions
    */
-  public call(boundingRect: DOMRect): void {
+  public handle(boundingRect: DOMRect): void {
     if (!this.iframe.element) return;
     this.iframe.element.style.height = `${boundingRect.height}px`;
   }
