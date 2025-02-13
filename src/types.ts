@@ -1,17 +1,7 @@
-export const enum ErrorReasons {
-  DUPLICATE_IFRAME_ATTEMPT = "DUPLICATE_IFRAME_ATTEMPT",
-  SESSION_TIMEOUT = "SESSION_TIMEOUT",
-  NETWORK_CONNECTIVITY_ISSUE = "NETWORK_CONNECTIVITY_ISSUE",
-  INVALID_API_KEY = "INVALID_API_KEY",
-  SHARE_CREDENTIALS_ERROR = "SHARE_CREDENTIALS_ERROR",
-  BIRTHDATE_MISMATCH = "BIRTHDATE_MISMATCH",
-  SSN4_MISMATCH = "SSN4_MISMATCH",
-  ADDITIONAL_DATA_EXCEEDED_ATTEMPTS = "ADDITIONAL_DATA_EXCEEDED_ATTEMPTS",
-  UNKNOWN_ERROR = "UNKNOWN_ERROR",
-}
+import { ErrorReasons, PossibleEventTypes } from "@sdk/values";
 
 export interface OneClickError {
-  reason: ErrorReasons;
+  reason: (typeof ErrorReasons)[keyof typeof ErrorReasons];
   additionalData: {
     name: string;
     message: string;
@@ -25,4 +15,11 @@ export interface OneClickError {
 
 export interface OneClickResponseData {
   // Add response data fields here as needed
+}
+
+export interface ClientMessageEvent {
+  type: (typeof PossibleEventTypes)[keyof typeof PossibleEventTypes];
+  data: Record<string, unknown> | null;
+  source: "VerifiedInc.Client";
+  timestamp: number;
 }

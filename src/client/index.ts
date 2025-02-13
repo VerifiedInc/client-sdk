@@ -1,11 +1,20 @@
-import { OneClickError, OneClickResponseData, ErrorReasons } from "@sdk/types";
-import { ClientOptions, ClientInterface } from "./types";
+import { OneClickError, OneClickResponseData } from "@sdk/types";
+import { ErrorReasons } from "@sdk/values";
+
+import { ClientOptions, ClientInterface } from "@sdk/client/types";
+import { ErrorLogger } from "@sdk/client/logger/error-logger";
+
+import { Iframe } from "@sdk/client/iframe/iframe";
+import { IframeConfig } from "@sdk/client/iframe/iframe-config";
+import { IframeMessageManager } from "@sdk/client/iframe/iframe-message-manager";
 
 export class Client implements ClientInterface {
-  public ready: boolean = false;
+  private readonly errorLogger = new ErrorLogger();
+  private readonly iframe: Iframe;
+  private readonly iframeConfig: IframeConfig;
+  private readonly iframeMessageManager: IframeMessageManager;
 
-  private iframe: HTMLIFrameElement | null = null;
-  private readonly logName = "VerifiedInc Client SDK";
+  public ready: boolean = false;
   private readonly onReady: () => void;
   private readonly onSuccess: (data: OneClickResponseData) => void;
   private readonly onError: (error: OneClickError) => void;
@@ -15,7 +24,19 @@ export class Client implements ClientInterface {
     this.onSuccess = options.onSuccess || (() => {});
     this.onError = options.onError || (() => {});
 
-    if (!this.options.publicKey) {
+    this.iframeConfig = new IframeConfig(options.publicKey);
+    this.iframe = new Iframe(this.iframeConfig);
+    this.iframeMessageManager = new IframeMessageManager({
+      onMessage: this.messageHandler.bind(this),
+      iframe: this.iframe,
+      iframeConfig: this.iframeConfig,
+    });
+
+    // Return if the public key is not provided, another instance will have to be created
+    if (
+      !this.options.publicKey ||
+      !this.options.publicKey.trim().startsWith("pub_")
+    ) {
       this.onError({
         reason: ErrorReasons.INVALID_API_KEY,
         additionalData: {
@@ -40,8 +61,8 @@ export class Client implements ClientInterface {
   }
 
   public show(element: HTMLElement): void {
-    if (this.iframe) {
-      this.logError({
+    if (this.iframe.element) {
+      const error: OneClickError = {
         reason: ErrorReasons.DUPLICATE_IFRAME_ATTEMPT,
         additionalData: {
           name: "DuplicateIframe",
@@ -52,41 +73,31 @@ export class Client implements ClientInterface {
             errorCode: "DUPLICATE_IFRAME_ATTEMPT",
           },
         },
-      });
-      this.onError({
-        reason: ErrorReasons.DUPLICATE_IFRAME_ATTEMPT,
-        additionalData: {
-          name: "DuplicateIframe",
-          message: "SDK iframe already exists",
-          code: 400,
-          className: "DuplicateIframe",
-          data: {
-            errorCode: "DUPLICATE_IFRAME_ATTEMPT",
-          },
-        },
-      });
+      };
+      this.errorLogger.log(error);
+      this.onError(error);
       return;
     }
 
-    const iframe = document.createElement("iframe");
-    const url = new URL("https://embeded.1-click.verified.inc");
-    url.searchParams.append("publicKey", this.options.publicKey);
+    element.appendChild(this.iframe.make());
 
-    iframe.src = url.toString();
-    element.appendChild(iframe);
-    this.iframe = iframe;
+    this.iframeMessageManager.addListener();
   }
 
   public destroy(): void {
-    if (this.iframe && this.iframe.parentElement) {
-      this.iframe.parentElement.removeChild(this.iframe);
-      this.iframe = null;
-    }
+    this.iframeMessageManager.removeListener();
+    this.iframe.dispose();
   }
 
-  private logError(message?: any, ...optionalParams: any[]): void {
-    console.error(this.logName + ": ", message, ...optionalParams);
-  }
+  private messageHandler = (event: MessageEvent) => {
+    const data = event.data;
+    console.log("message event from iframe arrived", data);
+    if (data.type === "success") {
+      this.onSuccess(data.payload);
+    } else if (data.type === "error") {
+      this.onError(data.payload);
+    }
+  };
 }
 
 // Create the VerifiedInc namespace and attach to window

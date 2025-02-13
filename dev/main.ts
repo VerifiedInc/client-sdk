@@ -4,15 +4,14 @@ import * as VerifiedInc from "@sdk/index";
 function main() {
   // Your development code here
   const sdk = new VerifiedInc.Client({
-    publicKey: "test-key",
+    publicKey: "pub_test-key",
     onReady: handleReadySDK,
     onSuccess: handleSuccess,
     onError: handleError,
   });
 
   function handleReadySDK() {
-    console.log(sdk.ready);
-    sdk.show(document.body);
+    console.log("sdk ready");
     sdk.show(document.body);
   }
 
@@ -22,7 +21,9 @@ function main() {
     console.log("VerifiedInc Client SDK success:", oneClickSuccessData);
   }
 
-  function handleError(error: VerifiedInc.OneClickError) {}
+  function handleError(error: VerifiedInc.OneClickError) {
+    console.error(error);
+  }
 }
 
 main();
