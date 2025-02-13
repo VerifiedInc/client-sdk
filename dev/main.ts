@@ -10,7 +10,6 @@ function main() {
 
   function handleReadySDK() {
     console.log("sdk ready");
-    sdk.show(document.body);
   }
 
   function handleSuccess(oneClickSuccessData: OneClickResponseData) {
@@ -20,6 +19,16 @@ function main() {
   function handleError(error: OneClickError) {
     console.error(error.reason, error.additionalData);
   }
+
+  document.getElementById("show-sdk")?.addEventListener("click", () => {
+    if (!sdk.ready) return;
+    sdk.show(document.body);
+  });
+
+  document.getElementById("remove-sdk")?.addEventListener("click", () => {
+    if (!sdk.ready) return;
+    sdk.destroy();
+  });
 }
 
 main();
