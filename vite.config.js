@@ -32,5 +32,10 @@ export default defineConfig(({ command }) => {
         },
       },
     },
+    resolve: {
+      alias: {
+        "@sdk": resolve(__dirname, "src"),
+      },
+    },
   };
 });
