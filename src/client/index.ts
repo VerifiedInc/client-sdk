@@ -36,6 +36,7 @@ export class Client implements ClientInterface {
     // Return if the public key is not provided, another instance will have to be created
     if (
       !this.options.publicKey ||
+      typeof this.options.publicKey !== "string" ||
       !this.options.publicKey.trim().startsWith("pub_")
     ) {
       this.onError(

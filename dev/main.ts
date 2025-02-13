@@ -22,7 +22,7 @@ function main() {
 
   document.getElementById("show-sdk")?.addEventListener("click", () => {
     if (!sdk.ready) return;
-    sdk.show(document.body);
+    sdk.show(document.getElementById("sdk-container") as HTMLElement);
   });
 
   document.getElementById("remove-sdk")?.addEventListener("click", () => {
