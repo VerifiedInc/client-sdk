@@ -10,6 +10,8 @@ import { Iframe } from "@sdk/client/iframe/iframe";
 import { IframeConfig } from "@sdk/client/iframe/iframe-config";
 import { IframeMessageManager } from "@sdk/client/iframe/iframe-message-manager";
 
+import { ViewportResizeEvent } from "@sdk/client/iframe/events/viewport-resize.event";
+
 export interface IframeEventManagerOptions {
   iframe: Iframe;
   iframeConfig: IframeConfig;
@@ -17,11 +19,13 @@ export interface IframeEventManagerOptions {
   onError: (error: OneClickError) => void;
 }
 export class IframeEventManager {
+  private readonly iframe: Iframe;
   private readonly iframeMessageManager: IframeMessageManager;
   private readonly onSuccess: (data: OneClickResponseData) => void;
   private readonly onError: (error: OneClickError) => void;
 
   constructor(options: IframeEventManagerOptions) {
+    this.iframe = options.iframe;
     this.iframeMessageManager = new IframeMessageManager({
       iframe: options.iframe,
       iframeConfig: options.iframeConfig,
@@ -41,6 +45,9 @@ export class IframeEventManager {
 
   private handleMessage(data: ClientMessageEvent): void {
     switch (data.type) {
+      case "VERIFIED_INC_CLIENT_SDK_VIEWPORT_RESIZE":
+        new ViewportResizeEvent(this.iframe).call(data.data as any);
+        break;
       case "VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION":
         this.onSuccess(data.data as OneClickResponseData);
         break;

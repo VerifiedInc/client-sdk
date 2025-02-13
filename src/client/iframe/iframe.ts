@@ -21,7 +21,7 @@ export class Iframe {
       sandbox: "allow-scripts allow-same-origin allow-forms",
       importance: "high",
       style:
-        "border: none; width: 100%; height: 100%; max-width: 500px; min-height: 600px; max-height: 100vh;",
+        "display: block; border: none; width: 100%; height: 100%; max-width: 500px; min-width: min(500px, 100%); overflow: hidden; margin: auto;",
     };
 
     // Apply default attributes
