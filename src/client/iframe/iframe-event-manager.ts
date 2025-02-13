@@ -42,7 +42,7 @@ export class IframeEventManager {
   private handleMessage(data: ClientMessageEvent): void {
     switch (data.type) {
       case "VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION":
-        this.onSuccess(data);
+        this.onSuccess(data.data as OneClickResponseData);
         break;
       case "VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION_ERROR":
         this.onError(
