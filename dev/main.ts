@@ -10,6 +10,7 @@ function main() {
 
   function handleReadySDK() {
     console.log("sdk ready");
+    sdk.show(document.getElementById("sdk-container") as HTMLElement);
   }
 
   function handleSuccess(oneClickSuccessData: OneClickResponseData) {

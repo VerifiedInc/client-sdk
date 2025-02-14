@@ -18,10 +18,10 @@ export class Iframe {
       loading: "eager",
       referrerpolicy: "no-referrer",
       allow: "camera 'none'; microphone 'none'; geolocation 'none'",
-      sandbox: "allow-scripts allow-same-origin allow-forms",
+      sandbox: "allow-scripts allow-same-origin allow-forms allow-popups",
       importance: "high",
       style:
-        "display: block; border: none; width: 100%; height: 100%; max-width: 500px; min-width: min(500px, 100%); overflow: hidden; margin: auto;",
+        "display: none; border: none; width: 100%; height: 100%; max-width: 500px; min-width: min(500px, 100%); overflow: hidden; margin: auto;",
     };
 
     // Apply default attributes
@@ -30,7 +30,6 @@ export class Iframe {
     });
 
     this.element = iframe;
-
     parent.appendChild(this.element);
 
     return this.element;

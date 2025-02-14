@@ -11,6 +11,7 @@ import { IframeConfig } from "@sdk/client/iframe/iframe-config";
 import { IframeMessageManager } from "@sdk/client/iframe/iframe-message-manager";
 
 import { ViewportResizeEvent } from "@sdk/client/iframe/events/viewport-resize.event";
+import { ViewportReadyEvent } from "@sdk/client/iframe/events/viewport-ready.event";
 
 export interface IframeEventManagerOptions {
   iframe: Iframe;
@@ -45,6 +46,9 @@ export class IframeEventManager {
 
   private handleMessage(data: ClientMessageEvent): void {
     switch (data.type) {
+      case "VERIFIED_INC_CLIENT_SDK_VIEWPORT_READY":
+        new ViewportReadyEvent(this.iframe).handle(data.data as any);
+        break;
       case "VERIFIED_INC_CLIENT_SDK_VIEWPORT_RESIZE":
         new ViewportResizeEvent(this.iframe).handle(data.data as any);
         break;
