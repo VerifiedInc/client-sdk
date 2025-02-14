@@ -1,6 +1,6 @@
 # @verifiedinc-public/client-sdk
 
-![npm version](https://img.shields.io/npm/v/%40verifiedinc%2Fclient-sdk?label=npm%20package&labelColor=%233c434b&color=%2332c553&cacheSeconds=60)
+![npm version](https://img.shields.io/npm/v/%40verifiedinc-public%2Fclient-sdk?label=npm%20package&labelColor=%233c434b&color=%2332c553&cacheSeconds=60)
 ![Github Actions publish](https://github.com/VerifiedInc/client-sdk/actions/workflows/publish.yml/badge.svg)
 
 A TypeScript-based SDK for serving Verified's 1-click service into web applications.
