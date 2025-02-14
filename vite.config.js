@@ -1,5 +1,6 @@
-import { defineConfig } from "vite";
 import { resolve } from "path";
+import { defineConfig } from "vite";
+import dts from "vite-plugin-dts";
 
 export default defineConfig(({ command }) => {
   if (command === "serve") {
@@ -21,7 +22,7 @@ export default defineConfig(({ command }) => {
     build: {
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
-        name: "Verified.Client",
+        name: "Verified",
         fileName: (format) => `index.${format}.js`,
         formats: ["esm", "umd"],
       },
@@ -37,5 +38,13 @@ export default defineConfig(({ command }) => {
         "@sdk": resolve(__dirname, "src"),
       },
     },
+    plugins: [
+      dts({
+        rollupTypes: true,
+        outDir: "dist",
+        include: ["src"],
+        exclude: ["dev", "dist"],
+      }),
+    ],
   };
 });

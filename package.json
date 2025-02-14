@@ -4,14 +4,14 @@
   "version": "0.0.1",
   "description": "A repo to house our client SDK",
   "author": "Verified",
-  "main": "./dist/index.js",
+  "main": "./dist/index.esm.js",
   "module": "./dist/index.esm.js",
   "jsnext:main": "./dist/index.esm.js",
   "browser": "./dist/index.umd.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.es.js",
+      "import": "./dist/index.esm.js",
       "require": "./dist/index.umd.js",
       "types": "./dist/index.d.ts"
     }
@@ -27,8 +27,9 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
+    "@types/node": "^20.11.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.0",
-    "@types/node": "^20.11.0"
+    "vite-plugin-dts": "^4.5.0"
   }
 }

@@ -14,12 +14,13 @@ export class Iframe {
 
     // Default security configurations
     const defaultAttributes = {
+      title: "Client SDK Iframe",
       security: "restricted",
       loading: "eager",
       referrerpolicy: "no-referrer",
       allow: "camera 'none'; microphone 'none'; geolocation 'none'",
-      sandbox: "allow-scripts allow-same-origin allow-forms allow-popups",
-      importance: "high",
+      sandbox:
+        "allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation",
       style:
         "display: none; border: none; width: 100%; height: 100%; max-width: 500px; min-width: min(500px, 100%); overflow: hidden; margin: auto;",
     };

@@ -14,5 +14,41 @@
       <p>This is a text</p>
     </div>
     <script type="module" src="/main.ts"></script>
+    <!-- <script type="module" src="/dist/index.umd.js" type="module"></script>
+    <script type="module">
+      function main() {
+        const sdk = new Verified.Client({
+          publicKey: "pub_test-key",
+          onReady: handleReadySDK,
+          onSuccess: handleSuccess,
+          onError: handleError,
+        });
+
+        function handleReadySDK() {
+          console.log("sdk ready");
+          sdk.show(document.getElementById("sdk-container"));
+        }
+
+        function handleSuccess(oneClickSuccessData) {
+          console.log("Verified Client SDK success:", oneClickSuccessData);
+        }
+
+        function handleError(error) {
+          console.error(error.reason, error.additionalData);
+        }
+
+        document.getElementById("show-sdk")?.addEventListener("click", () => {
+          if (!sdk.ready) return;
+          sdk.show(document.getElementById("sdk-container"));
+        });
+
+        document.getElementById("remove-sdk")?.addEventListener("click", () => {
+          if (!sdk.ready) return;
+          sdk.destroy();
+        });
+      }
+
+      main();
+    </script> -->
   </body>
 </html>
