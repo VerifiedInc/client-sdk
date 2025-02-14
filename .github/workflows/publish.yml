@@ -1,0 +1,107 @@
+name: publish
+
+permissions:
+  packages: write
+  contents: write
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  releaseJob:
+    permissions: write-all
+    name: Update version & deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ref: https://stackoverflow.com/questions/58177786/get-the-current-pushed-tag-in-github-actions
+      - name: Set version env
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+          echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      # ref: https://stackoverflow.com/questions/65606498/how-to-access-github-tag-message-in-github-actions
+      - name: Get and set tag message
+        run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git tag -l --format='%(contents:subject)' ${GITHUB_REF#refs/*/}
+          echo "TAG_MESSAGE=$(git tag -l --format='%(contents:subject)' ${GITHUB_REF#refs/*/} | sed 's/[^ .,:[:alpha:][:digit:]]//g')" >> $GITHUB_ENV
+
+      - name: Test env
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}
+          echo $TAG_VERSION
+          echo ${{ env.TAG_VERSION }}
+          echo ${{ env.TAG_MESSAGE }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      # Replace README for package distribution to have the public one
+      - name: Replace README for package distribution
+        run: |
+          rm README.md
+          mv README-package.md README.md
+
+      # ref: https://github.community/t/auto-update-package-json-on-publishing/16894
+      - name: Update package version
+        run: |
+          npm --no-git-tag-version version ${{ env.RELEASE_VERSION }}
+
+      # ref: https://github.com/marketplace/actions/npm-publish
+      - name: Github package publish
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: public
+
+      # Restore the original README for the repository
+      - name: Restore original README
+        run: |
+          mv README.md README-package.md
+          git checkout README.md
+
+      # ref: https://cli.github.com/manual/gh_release_delete
+      - name: Delete the v tag
+        run: gh release delete ${{ env.TAG_VERSION }} --cleanup-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ref: https://github.com/marketplace/actions/commit-with-deploy-key
+      - name: Commit with deploy key
+        uses: leigholiver/commit-with-deploy-key@v1.0.4
+        with:
+          source: .
+          commit_message: "[Release ${{ env.RELEASE_VERSION }}] ${{ env.TAG_MESSAGE }}"
+          destination_repo: verifiedinc/client-sdk
+          deploy_key: ${{ secrets.DEPLOY_KEY }}
+          git_username: VerifiedIncMachine
+          git_email: devops@verified.inc
+
+      # ref: https://github.com/marketplace/actions/gh-release
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          tag_name: ${{ env.RELEASE_VERSION }}
+          name: ${{ env.RELEASE_VERSION }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          target_commitish: main
