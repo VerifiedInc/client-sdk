@@ -1,5 +1,5 @@
 {
-  "name": "@verifiedinc/client-sdk",
+  "name": "@verifiedinc-public/client-sdk",
   "version": "0.0.3",
   "description": "An SDK for serving Verified's 1-click service into web applications.",
   "author": "Verified",
