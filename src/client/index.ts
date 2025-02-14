@@ -24,7 +24,10 @@ export class Client implements ClientInterface {
     this.onSuccess = options.onSuccess || (() => {});
     this.onError = options.onError || (() => {});
 
-    this.iframeConfig = new IframeConfig(options.publicKey);
+    this.iframeConfig = new IframeConfig(
+      options.publicKey,
+      options.environment
+    );
     this.iframe = new Iframe(this.iframeConfig);
     this.iframeEventManager = new IframeEventManager({
       iframe: this.iframe,

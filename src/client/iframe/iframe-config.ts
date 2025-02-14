@@ -1,9 +1,20 @@
 export class IframeConfig {
-  public readonly origin = "http://localhost:3070";
+  private readonly origins = {
+    local: "http://localhost:3070",
+    development: "https://1-click.dev-verifiedinc.com",
+    staging: "https://1-click.staging-verifiedinc.com",
+    sandbox: "https://1-click.sandbox-verifiedinc.com",
+    production: "https://1-click.verified.inc",
+  };
+  public readonly origin: string;
   public readonly eventSource = "Verified.Client";
   public readonly url: URL;
 
-  constructor(publicKey: string) {
+  // Default environment to production for convention
+  constructor(publicKey: string, environment = "production") {
+    this.origin =
+      this.origins[environment as keyof typeof this.origins] ??
+      this.origins.production;
     this.url = new URL(this.origin);
     this.url.pathname = `/sdk/client`;
     this.url.searchParams.append("publicKey", publicKey);
