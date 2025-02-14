@@ -39,3 +39,5 @@ terraform.rc
 node_modules/
 
 dist/
+
+.DS_STORE

@@ -2,7 +2,7 @@
   "private": true,
   "name": "@verifiedinc/client-sdk",
   "version": "0.0.1",
-  "description": "A repo to house our client SDK",
+  "description": "An SDK for serving Verified's 1-click service into web applications.",
   "author": "Verified",
   "main": "./dist/index.esm.js",
   "module": "./dist/index.esm.js",
@@ -22,7 +22,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1",
     "type-check": "tsc --noEmit"
   },
