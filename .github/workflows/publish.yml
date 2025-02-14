@@ -88,7 +88,7 @@ jobs:
         with:
           source: .
           commit_message: "[Release ${{ env.RELEASE_VERSION }}] ${{ env.TAG_MESSAGE }}"
-          destination_repo: verifiedinc-public/client-sdk
+          destination_repo: verifiedinc/client-sdk
           deploy_key: ${{ secrets.DEPLOY_KEY }}
           git_username: VerifiedIncMachine
           git_email: devops@verified.inc
