@@ -8,6 +8,7 @@ workflows:
       - unumid/lint-and-test:
           context:
             - Github-Packages
+          lint_script_name: lint
           test_script_name: test
           name: unumid/lint-and-test-branch
           cache_version: v6

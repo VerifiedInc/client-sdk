@@ -1,4 +1,4 @@
-import { Iframe } from "@sdk/client/iframe/iframe";
+import { Iframe } from '@sdk/client/iframe/iframe';
 
 /**
  * Handles the iframe's ready state.
@@ -21,7 +21,7 @@ export class ViewportReadyEvent {
    */
   public handle(boundingRect: DOMRect): void {
     if (!this.iframe.element) return;
-    this.iframe.element.style.display = "block";
+    this.iframe.element.style.display = 'block';
     this.iframe.element.style.height = `${boundingRect.height}px`;
   }
 }

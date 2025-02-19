@@ -1,0 +1,19 @@
+# Ignore build artifacts
+dist/
+
+# ignore dependencies
+node_modules
+package-lock.json
+
+# ignore IDE files
+.history
+
+# ignore generated files
+playwright-report
+test-results
+
+# trunk
+.trunk/
+
+# circle ci
+.circleci/

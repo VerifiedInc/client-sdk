@@ -1,4 +1,4 @@
-import { OneClickError, OneClickResponseData } from "@sdk/types";
+import { OneClickError, OneClickResponseData } from '@sdk/types';
 
 export interface ClientOptions {
   environment?: string;

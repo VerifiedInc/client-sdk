@@ -1,17 +1,13 @@
-import {
-  ClientMessageEvent,
-  OneClickError,
-  OneClickResponseData,
-} from "@sdk/types";
+import { ClientMessageEvent, OneClickError, OneClickResponseData } from '@sdk/types';
 
-import { ErrorAdditionalData } from "@sdk/errors/one-click-error";
+import { ErrorAdditionalData } from '@sdk/errors/one-click-error';
 
-import { Iframe } from "@sdk/client/iframe/iframe";
-import { IframeConfig } from "@sdk/client/iframe/iframe-config";
-import { IframeMessageManager } from "@sdk/client/iframe/iframe-message-manager";
+import { Iframe } from '@sdk/client/iframe/iframe';
+import { IframeConfig } from '@sdk/client/iframe/iframe-config';
+import { IframeMessageManager } from '@sdk/client/iframe/iframe-message-manager';
 
-import { ViewportResizeEvent } from "@sdk/client/iframe/events/viewport-resize.event";
-import { ViewportReadyEvent } from "@sdk/client/iframe/events/viewport-ready.event";
+import { ViewportResizeEvent } from '@sdk/client/iframe/events/viewport-resize.event';
+import { ViewportReadyEvent } from '@sdk/client/iframe/events/viewport-ready.event';
 
 export interface IframeEventManagerOptions {
   iframe: Iframe;
@@ -46,21 +42,18 @@ export class IframeEventManager {
 
   private handleMessage(data: ClientMessageEvent): void {
     switch (data.type) {
-      case "VERIFIED_INC_CLIENT_SDK_VIEWPORT_READY":
+      case 'VERIFIED_INC_CLIENT_SDK_VIEWPORT_READY':
         new ViewportReadyEvent(this.iframe).handle(data.data as any);
         break;
-      case "VERIFIED_INC_CLIENT_SDK_VIEWPORT_RESIZE":
+      case 'VERIFIED_INC_CLIENT_SDK_VIEWPORT_RESIZE':
         new ViewportResizeEvent(this.iframe).handle(data.data as any);
         break;
-      case "VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION":
+      case 'VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION':
         this.onSuccess(data.data as OneClickResponseData);
         break;
-      case "VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION_ERROR":
+      case 'VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION_ERROR':
         this.onError(
-          new OneClickError(
-            "UNKNOWN_ERROR",
-            data.data as unknown as ErrorAdditionalData
-          )
+          new OneClickError('UNKNOWN_ERROR', data.data as unknown as ErrorAdditionalData)
         );
         break;
     }

@@ -1,4 +1,4 @@
-import { ErrorReasons } from "@sdk/values";
+import { ErrorReasons } from '@sdk/values';
 
 export interface ErrorAdditionalData {
   name: string;
