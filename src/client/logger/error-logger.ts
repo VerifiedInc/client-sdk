@@ -3,7 +3,7 @@ export class ErrorLogger {
 
   constructor() {}
 
-  public log(message?: any, ...optionalParams: any[]): void {
+  public log(message?: unknown, ...optionalParams: unknown[]): void {
     console.error(this.logName + ': ', message, ...optionalParams);
   }
 }

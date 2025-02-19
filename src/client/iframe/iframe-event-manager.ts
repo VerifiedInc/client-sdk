@@ -43,10 +43,10 @@ export class IframeEventManager {
   private handleMessage(data: ClientMessageEvent): void {
     switch (data.type) {
       case 'VERIFIED_INC_CLIENT_SDK_VIEWPORT_READY':
-        new ViewportReadyEvent(this.iframe).handle(data.data as any);
+        new ViewportReadyEvent(this.iframe).handle(data.data as unknown as DOMRect);
         break;
       case 'VERIFIED_INC_CLIENT_SDK_VIEWPORT_RESIZE':
-        new ViewportResizeEvent(this.iframe).handle(data.data as any);
+        new ViewportResizeEvent(this.iframe).handle(data.data as unknown as DOMRect);
         break;
       case 'VERIFIED_INC_CLIENT_SDK_FORM_SUBMISSION':
         this.onSuccess(data.data as OneClickResponseData);
