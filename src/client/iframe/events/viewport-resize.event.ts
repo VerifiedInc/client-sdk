@@ -1,4 +1,4 @@
-import { Iframe } from "@sdk/client/iframe/iframe";
+import { Iframe } from '@sdk/client/iframe/iframe';
 
 /**
  * Handles the resizing of an iframe's height based on its container's dimensions.

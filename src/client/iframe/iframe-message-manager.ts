@@ -1,9 +1,9 @@
-import { ClientMessageEvent } from "@sdk/types";
+import { ClientMessageEvent } from '@sdk/types';
 
-import { parseMessageEvent } from "@sdk/client/utils/parse-message-event";
-import { ErrorLogger } from "@sdk/client/logger/error-logger";
-import { Iframe } from "@sdk/client/iframe/iframe";
-import { IframeConfig } from "@sdk/client/iframe/iframe-config";
+import { parseMessageEvent } from '@sdk/client/utils/parse-message-event';
+import { ErrorLogger } from '@sdk/client/logger/error-logger';
+import { Iframe } from '@sdk/client/iframe/iframe';
+import { IframeConfig } from '@sdk/client/iframe/iframe-config';
 
 interface IframeMessageManagerOptions {
   onMessage: (data: ClientMessageEvent, event: MessageEvent) => void;
@@ -15,27 +15,20 @@ export class IframeMessageManager {
   private readonly logger = new ErrorLogger();
   private readonly iframe: Iframe;
   private readonly iframeConfig: IframeConfig;
-  private readonly onMessage: (
-    data: ClientMessageEvent,
-    event: MessageEvent
-  ) => void;
+  private readonly onMessage: (data: ClientMessageEvent, event: MessageEvent) => void;
 
-  constructor({
-    onMessage,
-    iframe,
-    iframeConfig,
-  }: IframeMessageManagerOptions) {
+  constructor({ onMessage, iframe, iframeConfig }: IframeMessageManagerOptions) {
     this.onMessage = onMessage;
     this.iframeConfig = iframeConfig;
     this.iframe = iframe;
   }
 
   addListener() {
-    window.addEventListener("message", this.handleMessage);
+    window.addEventListener('message', this.handleMessage);
   }
 
   removeListener() {
-    window.removeEventListener("message", this.handleMessage);
+    window.removeEventListener('message', this.handleMessage);
   }
 
   /**
@@ -53,10 +46,9 @@ export class IframeMessageManager {
     // Sort-circuit if the event is not from the expected origin or iframe
     if (
       event.origin !== this.iframeConfig.origin ||
-      (this.iframe.element &&
-        event.source !== this.iframe.element.contentWindow)
+      (this.iframe.element && event.source !== this.iframe.element.contentWindow)
     ) {
-      return this.logger.log("Event sent from an invalid origin");
+      return this.logger.log('Event sent from an invalid origin');
     }
 
     // Ensure the event is from the iframe

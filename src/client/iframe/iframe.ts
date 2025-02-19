@@ -1,4 +1,4 @@
-import { IframeConfig } from "@sdk/client/iframe/iframe-config";
+import { IframeConfig } from '@sdk/client/iframe/iframe-config';
 
 export class Iframe {
   public element: HTMLIFrameElement | null = null;
@@ -9,20 +9,20 @@ export class Iframe {
   }
 
   public make(parent: HTMLElement): HTMLIFrameElement {
-    const iframe = document.createElement("iframe");
+    const iframe = document.createElement('iframe');
     iframe.src = this.iframeConfig.url.toString();
 
     // Default security configurations
     const defaultAttributes = {
-      title: "Client SDK Iframe",
-      security: "restricted",
-      loading: "eager",
-      referrerpolicy: "no-referrer",
+      title: 'Client SDK Iframe',
+      security: 'restricted',
+      loading: 'eager',
+      referrerpolicy: 'no-referrer',
       allow: "camera 'none'; microphone 'none'; geolocation 'none'",
       sandbox:
-        "allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation",
+        'allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation',
       style:
-        "display: none; border: none; width: 100%; height: 100%; max-width: 500px; min-width: min(500px, 100%); overflow: hidden; margin: auto;",
+        'display: none; border: none; width: 100%; height: 100%; max-width: 500px; min-width: min(500px, 100%); overflow: hidden; margin: auto;',
     };
 
     // Apply default attributes

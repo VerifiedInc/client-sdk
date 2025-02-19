@@ -1,12 +1,12 @@
-import { OneClickError, OneClickResponseData } from "@sdk/types";
-import { ErrorReasons } from "@sdk/values";
+import { OneClickError, OneClickResponseData } from '@sdk/types';
+import { ErrorReasons } from '@sdk/values';
 
-import { ClientOptions, ClientInterface } from "@sdk/client/types";
-import { ErrorLogger } from "@sdk/client/logger/error-logger";
+import { ClientOptions, ClientInterface } from '@sdk/client/types';
+import { ErrorLogger } from '@sdk/client/logger/error-logger';
 
-import { Iframe } from "@sdk/client/iframe/iframe";
-import { IframeConfig } from "@sdk/client/iframe/iframe-config";
-import { IframeEventManager } from "@sdk/client/iframe/iframe-event-manager";
+import { Iframe } from '@sdk/client/iframe/iframe';
+import { IframeConfig } from '@sdk/client/iframe/iframe-config';
+import { IframeEventManager } from '@sdk/client/iframe/iframe-event-manager';
 
 export class Client implements ClientInterface {
   private readonly errorLogger = new ErrorLogger();
@@ -24,10 +24,7 @@ export class Client implements ClientInterface {
     this.onSuccess = options.onSuccess || (() => {});
     this.onError = options.onError || (() => {});
 
-    this.iframeConfig = new IframeConfig(
-      options.publicKey,
-      options.environment
-    );
+    this.iframeConfig = new IframeConfig(options.publicKey, options.environment);
     this.iframe = new Iframe(this.iframeConfig);
     this.iframeEventManager = new IframeEventManager({
       iframe: this.iframe,
@@ -39,17 +36,17 @@ export class Client implements ClientInterface {
     // Return if the public key is not provided, another instance will have to be created
     if (
       !this.options.publicKey ||
-      typeof this.options.publicKey !== "string" ||
-      !this.options.publicKey.trim().startsWith("pub_")
+      typeof this.options.publicKey !== 'string' ||
+      !this.options.publicKey.trim().startsWith('pub_')
     ) {
       this.onError(
         new OneClickError(ErrorReasons.INVALID_API_KEY, {
-          name: "InvalidApiKey",
-          message: "Invalid API key",
+          name: 'InvalidApiKey',
+          message: 'Invalid API key',
           code: 400,
-          className: "InvalidApiKey",
+          className: 'InvalidApiKey',
           data: {
-            errorCode: "INVALID_API_KEY",
+            errorCode: 'INVALID_API_KEY',
           },
         })
       );
@@ -88,7 +85,7 @@ const Verified = {
 };
 
 // If running in the browser, attach to window
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   if (!window.Verified) {
     window.Verified = Verified;
   } else {
