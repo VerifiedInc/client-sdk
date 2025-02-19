@@ -8,6 +8,7 @@ workflows:
       - unumid/lint-and-test:
           lint_script_name: lint
           test_script_name: test
+          compile_script_name: build
           name: unumid/lint-and-test-branch
           cache_version: v6
           filters:
