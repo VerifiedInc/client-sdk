@@ -1,32 +1,32 @@
-import { Client, OneClickResponseData, OneClickError } from "@sdk/index";
+import { Client, SuccessEventResponseData, OneClickError } from '@sdk/index';
 
 function main() {
   const sdk = new Client({
-    publicKey: "pub_test-key",
+    publicKey: 'pub_test-key',
     onReady: handleReadySDK,
     onSuccess: handleSuccess,
     onError: handleError,
   });
 
   function handleReadySDK() {
-    console.log("sdk ready");
-    sdk.show(document.getElementById("sdk-container") as HTMLElement);
+    console.log('sdk ready');
+    sdk.show(document.getElementById('sdk-container') as HTMLElement);
   }
 
-  function handleSuccess(oneClickSuccessData: OneClickResponseData) {
-    console.log("Verified Client SDK success:", oneClickSuccessData);
+  function handleSuccess(data: SuccessEventResponseData) {
+    console.log('Verified Client SDK success:', data);
   }
 
   function handleError(error: OneClickError) {
     console.error(error.reason, error.additionalData);
   }
 
-  document.getElementById("show-sdk")?.addEventListener("click", () => {
+  document.getElementById('show-sdk')?.addEventListener('click', () => {
     if (!sdk.ready) return;
-    sdk.show(document.getElementById("sdk-container") as HTMLElement);
+    sdk.show(document.getElementById('sdk-container') as HTMLElement);
   });
 
-  document.getElementById("remove-sdk")?.addEventListener("click", () => {
+  document.getElementById('remove-sdk')?.addEventListener('click', () => {
     if (!sdk.ready) return;
     sdk.destroy();
   });

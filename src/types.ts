@@ -1,9 +1,9 @@
 import { PossibleEventTypes } from '@sdk/values';
 export { OneClickError } from '@sdk/errors/one-click-error';
 
-export interface OneClickResponseData {
-  // Add response data fields here as needed
-}
+export type SuccessEventResponseData = {
+  identityUuid: string;
+};
 
 export interface ClientMessageEvent {
   type: (typeof PossibleEventTypes)[keyof typeof PossibleEventTypes];
