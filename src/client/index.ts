@@ -1,4 +1,4 @@
-import { OneClickError, OneClickResponseData } from '@sdk/types';
+import { OneClickError, SuccessEventResponseData } from '@sdk/types';
 import { ErrorReasons } from '@sdk/values';
 
 import { ClientOptions, ClientInterface } from '@sdk/client/types';
@@ -16,7 +16,7 @@ export class Client implements ClientInterface {
 
   public ready: boolean = false;
   private readonly onReady: () => void;
-  private readonly onSuccess: (data: OneClickResponseData) => void;
+  private readonly onSuccess: (data: SuccessEventResponseData) => void;
   private readonly onError: (error: OneClickError) => void;
 
   constructor(private options: ClientOptions) {
