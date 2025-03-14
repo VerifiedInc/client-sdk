@@ -1,5 +1,6 @@
 import { ErrorReasons } from '@sdk/values';
 
+// This is the core-service additional data error structure, but only with the important properties included.
 export interface ErrorAdditionalData {
   name: string;
   message: string;

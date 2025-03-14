@@ -54,7 +54,7 @@ export class IframeEventManager {
         new ViewportResizeEvent(this.iframe).handle(data.data as unknown as DOMRect);
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT:
-        new OptedOutEvent().handle(data.data as unknown as OptedOutEventHandleData);
+        new OptedOutEvent().handle(data.data as OptedOutEventHandleData);
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION:
         this.onSuccess(data.data as SuccessEventResponseData);

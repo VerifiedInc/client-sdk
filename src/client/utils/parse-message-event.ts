@@ -1,5 +1,5 @@
 import { ClientMessageEvent } from '@sdk/types';
-import { PossibleEventTypes } from '@sdk/values';
+import { EventSource, PossibleEventTypes } from '@sdk/values';
 
 /**
  * Parses and validates a MessageEvent from the iframe.
@@ -18,7 +18,7 @@ export function parseMessageEvent(event: MessageEvent): ClientMessageEvent | fal
 
   // Validate the data
   const isValid =
-    data.source === 'Verified.Client' &&
+    data.source === EventSource &&
     typeof data.timestamp === 'number' &&
     typeof data.type === 'string' &&
     Object.values(PossibleEventTypes).includes(data.type) &&

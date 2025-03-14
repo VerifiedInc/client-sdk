@@ -2,7 +2,8 @@ import { Client, SuccessEventResponseData, OneClickError } from '@sdk/index';
 
 function main() {
   const sdk = new Client({
-    publicKey: 'pub_test-key',
+    environment: 'local',
+    sessionKey: 'TEST_SESSION_KEY_A_HERE',
     onReady: handleReadySDK,
     onSuccess: handleSuccess,
     onError: handleError,

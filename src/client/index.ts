@@ -24,7 +24,7 @@ export class Client implements ClientInterface {
     this.onSuccess = options.onSuccess || (() => {});
     this.onError = options.onError || (() => {});
 
-    this.iframeConfig = new IframeConfig(options.publicKey, options.environment);
+    this.iframeConfig = new IframeConfig(options.sessionKey, options.environment);
     this.iframe = new Iframe(this.iframeConfig);
     this.iframeEventManager = new IframeEventManager({
       iframe: this.iframe,
@@ -33,35 +33,29 @@ export class Client implements ClientInterface {
       onError: this.onError,
     });
 
-    // Return if the public key is not provided, another instance will have to be created
-    if (
-      !this.options.publicKey ||
-      typeof this.options.publicKey !== 'string' ||
-      !this.options.publicKey.trim().startsWith('pub_')
-    ) {
+    // Return if the session key is not provided, another instance will have to be created.
+    if (!this.options.sessionKey || typeof this.options.sessionKey !== 'string') {
       this.onError(
-        new OneClickError(ErrorReasons.INVALID_API_KEY, {
-          name: 'InvalidApiKey',
-          message: 'Invalid API key',
+        new OneClickError(ErrorReasons.INVALID_SESSION_KEY, {
+          name: 'InvalidSessionKey',
+          message: 'Invalid session key',
           code: 400,
-          className: 'InvalidApiKey',
+          className: 'InvalidSessionKey',
           data: {
-            errorCode: 'INVALID_API_KEY',
+            errorCode: 'INVALID_SESSION_KEY',
           },
         })
       );
       return;
     }
 
-    // Mock async initialization
-    setTimeout(() => {
-      this.ready = true;
-      // Optionally notify success
-      this.onReady();
-    }, 1000);
+    this.ready = true;
+    // Notify success so customer implementation can handle that.
+    this.onReady();
   }
 
   public show(element: HTMLElement): void {
+    if (!this.ready) return;
     // Return if the iframe is already created, callback with error
     if (this.iframe.element) {
       const error = new OneClickError(ErrorReasons.DUPLICATE_IFRAME_ATTEMPT);
@@ -74,6 +68,7 @@ export class Client implements ClientInterface {
   }
 
   public destroy(): void {
+    if (!this.ready) return;
     this.iframeEventManager.removeListener();
     this.iframe.dispose();
   }
