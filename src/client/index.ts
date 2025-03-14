@@ -1,5 +1,6 @@
 import { OneClickError, SuccessEventResponseData } from '@sdk/types';
 import { ErrorReasons } from '@sdk/values';
+import { ClientError } from '@sdk/errors';
 
 import { ClientOptions, ClientInterface } from '@sdk/client/types';
 import { ErrorLogger } from '@sdk/client/logger/error-logger';
@@ -15,16 +16,15 @@ export class Client implements ClientInterface {
   private readonly iframeEventManager: IframeEventManager;
 
   public ready: boolean = false;
-  private readonly onReady: () => void;
+  private destroyed: boolean = false;
   private readonly onSuccess: (data: SuccessEventResponseData) => void;
   private readonly onError: (error: OneClickError) => void;
 
   constructor(private options: ClientOptions) {
-    this.onReady = options.onReady || (() => {});
     this.onSuccess = options.onSuccess || (() => {});
     this.onError = options.onError || (() => {});
 
-    this.iframeConfig = new IframeConfig(options.publicKey, options.environment);
+    this.iframeConfig = new IframeConfig(options.sessionKey, options.environment);
     this.iframe = new Iframe(this.iframeConfig);
     this.iframeEventManager = new IframeEventManager({
       iframe: this.iframe,
@@ -33,35 +33,28 @@ export class Client implements ClientInterface {
       onError: this.onError,
     });
 
-    // Return if the public key is not provided, another instance will have to be created
-    if (
-      !this.options.publicKey ||
-      typeof this.options.publicKey !== 'string' ||
-      !this.options.publicKey.trim().startsWith('pub_')
-    ) {
+    // Return if the session key is not provided, another instance will have to be created.
+    if (!this.options.sessionKey || typeof this.options.sessionKey !== 'string') {
       this.onError(
-        new OneClickError(ErrorReasons.INVALID_API_KEY, {
-          name: 'InvalidApiKey',
-          message: 'Invalid API key',
+        new OneClickError(ErrorReasons.INVALID_SESSION_KEY, {
+          name: 'InvalidSessionKey',
+          message: 'Invalid session key',
           code: 400,
-          className: 'InvalidApiKey',
+          className: 'InvalidSessionKey',
           data: {
-            errorCode: 'INVALID_API_KEY',
+            errorCode: 'INVALID_SESSION_KEY',
           },
         })
       );
       return;
     }
 
-    // Mock async initialization
-    setTimeout(() => {
-      this.ready = true;
-      // Optionally notify success
-      this.onReady();
-    }, 1000);
+    this.ready = true;
   }
 
   public show(element: HTMLElement): void {
+    if (this.destroyed) throw new ClientError(ErrorReasons.CLIENT_INSTANCE_ALREADY_DESTROYED);
+    if (!this.ready) return;
     // Return if the iframe is already created, callback with error
     if (this.iframe.element) {
       const error = new OneClickError(ErrorReasons.DUPLICATE_IFRAME_ATTEMPT);
@@ -74,6 +67,11 @@ export class Client implements ClientInterface {
   }
 
   public destroy(): void {
+    if (this.destroyed) throw new ClientError(ErrorReasons.CLIENT_INSTANCE_ALREADY_DESTROYED);
+    if (!this.ready) return;
+
+    this.destroyed = true;
+
     this.iframeEventManager.removeListener();
     this.iframe.dispose();
   }

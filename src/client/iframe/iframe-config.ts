@@ -1,3 +1,5 @@
+import { EventSource } from '@sdk/values';
+
 export class IframeConfig {
   private readonly origins = {
     local: 'http://localhost:3070',
@@ -7,14 +9,14 @@ export class IframeConfig {
     production: 'https://1-click.verified.inc',
   };
   public readonly origin: string;
-  public readonly eventSource = 'Verified.Client';
+  public readonly eventSource = EventSource;
   public readonly url: URL;
 
   // Default environment to production for convention
-  constructor(publicKey: string, environment = 'production') {
+  constructor(sessionKey: string, environment = 'production') {
     this.origin = this.origins[environment as keyof typeof this.origins] ?? this.origins.production;
     this.url = new URL(this.origin);
     this.url.pathname = `/sdk/client`;
-    this.url.searchParams.append('publicKey', publicKey);
+    this.url.searchParams.append('sessionKey', sessionKey);
   }
 }
