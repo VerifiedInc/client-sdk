@@ -1,5 +1,6 @@
 import { OneClickError, SuccessEventResponseData } from '@sdk/types';
 import { ErrorReasons } from '@sdk/values';
+import { ClientError } from '@sdk/errors';
 
 import { ClientOptions, ClientInterface } from '@sdk/client/types';
 import { ErrorLogger } from '@sdk/client/logger/error-logger';
@@ -15,12 +16,11 @@ export class Client implements ClientInterface {
   private readonly iframeEventManager: IframeEventManager;
 
   public ready: boolean = false;
-  private readonly onReady: () => void;
+  private destroyed: boolean = false;
   private readonly onSuccess: (data: SuccessEventResponseData) => void;
   private readonly onError: (error: OneClickError) => void;
 
   constructor(private options: ClientOptions) {
-    this.onReady = options.onReady || (() => {});
     this.onSuccess = options.onSuccess || (() => {});
     this.onError = options.onError || (() => {});
 
@@ -50,11 +50,10 @@ export class Client implements ClientInterface {
     }
 
     this.ready = true;
-    // Notify success so customer implementation can handle that.
-    this.onReady();
   }
 
   public show(element: HTMLElement): void {
+    if (this.destroyed) throw new ClientError(ErrorReasons.CLIENT_INSTANCE_ALREADY_DESTROYED);
     if (!this.ready) return;
     // Return if the iframe is already created, callback with error
     if (this.iframe.element) {
@@ -68,7 +67,11 @@ export class Client implements ClientInterface {
   }
 
   public destroy(): void {
+    if (this.destroyed) throw new ClientError(ErrorReasons.CLIENT_INSTANCE_ALREADY_DESTROYED);
     if (!this.ready) return;
+
+    this.destroyed = true;
+
     this.iframeEventManager.removeListener();
     this.iframe.dispose();
   }

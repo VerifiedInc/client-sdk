@@ -1,5 +1,5 @@
 import { ClientMessageEvent, OneClickError, SuccessEventResponseData } from '@sdk/types';
-import { PossibleEventTypes } from '@sdk/values';
+import { ErrorReasons, PossibleEventTypes } from '@sdk/values';
 
 import { ErrorAdditionalData } from '@sdk/errors/one-click-error';
 
@@ -62,6 +62,22 @@ export class IframeEventManager {
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR:
         this.onError(
           new OneClickError('UNKNOWN_ERROR', data.data as unknown as ErrorAdditionalData)
+        );
+        break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_INVALID_SESSION_KEY:
+        this.onError(
+          new OneClickError(
+            ErrorReasons.INVALID_SESSION_KEY,
+            data.data as unknown as ErrorAdditionalData
+          )
+        );
+        break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_SESSION_TIMEOUT:
+        this.onError(
+          new OneClickError(
+            ErrorReasons.SESSION_TIMEOUT,
+            data.data as unknown as ErrorAdditionalData
+          )
         );
         break;
     }
