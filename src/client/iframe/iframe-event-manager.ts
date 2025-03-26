@@ -61,7 +61,10 @@ export class IframeEventManager {
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR:
         this.onError(
-          new OneClickError('UNKNOWN_ERROR', data.data as unknown as ErrorAdditionalData)
+          new OneClickError(
+            ErrorReasons.SHARE_CREDENTIALS_ERROR,
+            data.data as unknown as ErrorAdditionalData
+          )
         );
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_INVALID_SESSION_KEY:
