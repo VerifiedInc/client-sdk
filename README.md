@@ -27,12 +27,13 @@ import * as VerifiedClient from '@verifiedinc-public/client-sdk';
 // Initialize the client
 const client = new VerifiedClient.Client({
   // Configuration options
-  publicKey: 'pub_test-key',
-  onReady: handleReadySDK,
-  onSuccess: handleSuccess,
+  sessionKey: 'SESSION_KEY',
+  onResult: handleResult,
   onError: handleError,
 });
 ```
+
+For a complete implementation example, see the [Example Implementation](#example-implementation) section below.
 
 ## Module Formats
 
@@ -60,7 +61,7 @@ npm install
 
 ### Available Scripts
 
-- `npm run dev` - Start development mode with Vite
+- `npm run dev` - Start development mode with Vite (runs the example in dev/main.ts)
 - `npm run test` - Test the project
 - `npm run build` - Build for production
 - `npm run type-check` - Run TypeScript type checking
@@ -78,6 +79,14 @@ src/
 ├── errors/        # Error handling
 ├── types.ts       # Global type definitions
 └── values.ts      # Constants and values
+dev/
+└── main.ts        # Example implementation for development and testing
+```
+
+You can run this example by executing:
+
+```bash
+npm run dev
 ```
 
 ## Building

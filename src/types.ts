@@ -1,8 +1,17 @@
-import { EventSource, PossibleEventTypes } from '@sdk/values';
-export { OneClickError } from '@sdk/errors/one-click-error';
+import { EventSource, PossibleEventTypes, SdkErrorReasons, SdkResultValues } from '@sdk/values';
+export { SdkError as SDKError } from '@sdk/errors/one-click-error';
 
-export type SuccessEventResponseData = {
-  identityUuid: string;
+export type SdkResult =
+  | {
+      type: typeof SdkResultValues.USER_SHARED_CREDENTIALS;
+      identityUuid: string;
+    }
+  | {
+      type: typeof SdkResultValues.USER_OPTED_OUT;
+    };
+
+export type SdkError = {
+  reason: (typeof SdkErrorReasons)[keyof typeof SdkErrorReasons];
 };
 
 export interface ClientMessageEvent {

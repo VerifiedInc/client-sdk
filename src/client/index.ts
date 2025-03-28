@@ -1,27 +1,25 @@
-import { OneClickError, SuccessEventResponseData } from '@sdk/types';
-import { ErrorReasons } from '@sdk/values';
-import { ClientError } from '@sdk/errors';
+import { SdkError, SdkResult } from '@sdk/types';
+import { SdkErrorReasons } from '@sdk/values';
 
 import { ClientOptions, ClientInterface } from '@sdk/client/types';
-import { ErrorLogger } from '@sdk/client/logger/error-logger';
 
 import { Iframe } from '@sdk/client/iframe/iframe';
 import { IframeConfig } from '@sdk/client/iframe/iframe-config';
 import { IframeEventManager } from '@sdk/client/iframe/iframe-event-manager';
 
-export class Client implements ClientInterface {
-  private readonly errorLogger = new ErrorLogger();
+export class VerifiedClientSDK implements ClientInterface {
   private readonly iframe: Iframe;
   private readonly iframeConfig: IframeConfig;
   private readonly iframeEventManager: IframeEventManager;
 
   public ready: boolean = false;
+  private resulted: boolean = false;
   private destroyed: boolean = false;
-  private readonly onSuccess: (data: SuccessEventResponseData) => void;
-  private readonly onError: (error: OneClickError) => void;
+  private readonly onResult: (data: SdkResult) => void;
+  private readonly onError: (error: SdkError) => void;
 
   constructor(private options: ClientOptions) {
-    this.onSuccess = options.onSuccess || (() => {});
+    this.onResult = options.onResult || (() => {});
     this.onError = options.onError || (() => {});
 
     this.iframeConfig = new IframeConfig(options.sessionKey, options.environment);
@@ -29,49 +27,32 @@ export class Client implements ClientInterface {
     this.iframeEventManager = new IframeEventManager({
       iframe: this.iframe,
       iframeConfig: this.iframeConfig,
-      onSuccess: this.onSuccess,
+      onResult: (...args) => {
+        if (this.resulted) return;
+        this.resulted = true;
+        this.onResult(...args);
+      },
       onError: this.onError,
     });
 
     // Return if the session key is not provided, another instance will have to be created.
     if (!this.options.sessionKey || typeof this.options.sessionKey !== 'string') {
-      this.onError(
-        new OneClickError(ErrorReasons.INVALID_SESSION_KEY, {
-          name: 'InvalidSessionKey',
-          message: 'Invalid session key',
-          code: 400,
-          className: 'InvalidSessionKey',
-          data: {
-            errorCode: 'INVALID_SESSION_KEY',
-          },
-        })
-      );
+      this.onError({ reason: SdkErrorReasons.INVALID_SESSION_KEY });
       return;
     }
 
     this.ready = true;
   }
 
-  public show(element: HTMLElement): void {
-    if (this.destroyed) throw new ClientError(ErrorReasons.CLIENT_INSTANCE_ALREADY_DESTROYED);
-    if (!this.ready) return;
-    // Return if the iframe is already created, callback with error
-    if (this.iframe.element) {
-      const error = new OneClickError(ErrorReasons.DUPLICATE_IFRAME_ATTEMPT);
-      this.errorLogger.log(error);
-      this.onError(error);
-      return;
-    }
-    this.iframe.make(element);
+  public show(element?: HTMLElement): void {
+    if (!this.ready || this.destroyed || this.iframe.element) return;
+    this.iframe.make(element || document.body);
     this.iframeEventManager.addListener();
   }
 
   public destroy(): void {
-    if (this.destroyed) throw new ClientError(ErrorReasons.CLIENT_INSTANCE_ALREADY_DESTROYED);
-    if (!this.ready) return;
-
+    if (!this.ready || this.destroyed) return;
     this.destroyed = true;
-
     this.iframeEventManager.removeListener();
     this.iframe.dispose();
   }
@@ -79,7 +60,7 @@ export class Client implements ClientInterface {
 
 // Create the Verified namespace and attach to window
 const Verified = {
-  Client: Client,
+  Client: VerifiedClientSDK,
 };
 
 // If running in the browser, attach to window
