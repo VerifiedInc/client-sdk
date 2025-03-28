@@ -1,7 +1,5 @@
-import { ClientMessageEvent, OneClickError, SuccessEventResponseData } from '@sdk/types';
-import { ErrorReasons, PossibleEventTypes } from '@sdk/values';
-
-import { ErrorAdditionalData } from '@sdk/errors/one-click-error';
+import { ClientMessageEvent, SdkResult, SdkError } from '@sdk/types';
+import { SdkErrorReasons, PossibleEventTypes, SdkResultValues } from '@sdk/values';
 
 import { Iframe } from '@sdk/client/iframe/iframe';
 import { IframeConfig } from '@sdk/client/iframe/iframe-config';
@@ -9,22 +7,18 @@ import { IframeMessageManager } from '@sdk/client/iframe/iframe-message-manager'
 
 import { ViewportResizeEvent } from '@sdk/client/iframe/events/viewport-resize.event';
 import { ViewportReadyEvent } from '@sdk/client/iframe/events/viewport-ready.event';
-import {
-  OptedOutEvent,
-  type OptedOutEventHandleData,
-} from '@sdk/client/iframe/events/opted-out.event';
 
 export interface IframeEventManagerOptions {
   iframe: Iframe;
   iframeConfig: IframeConfig;
-  onSuccess: (data: SuccessEventResponseData) => void;
-  onError: (error: OneClickError) => void;
+  onResult: (data: SdkResult) => void;
+  onError: (error: SdkError) => void;
 }
 export class IframeEventManager {
   private readonly iframe: Iframe;
   private readonly iframeMessageManager: IframeMessageManager;
-  private readonly onSuccess: (data: SuccessEventResponseData) => void;
-  private readonly onError: (error: OneClickError) => void;
+  private readonly onResult: (data: SdkResult) => void;
+  private readonly onError: (error: SdkError) => void;
 
   constructor(options: IframeEventManagerOptions) {
     this.iframe = options.iframe;
@@ -33,7 +27,7 @@ export class IframeEventManager {
       iframeConfig: options.iframeConfig,
       onMessage: this.handleMessage.bind(this),
     });
-    this.onSuccess = options.onSuccess;
+    this.onResult = options.onResult;
     this.onError = options.onError;
   }
 
@@ -54,34 +48,22 @@ export class IframeEventManager {
         new ViewportResizeEvent(this.iframe).handle(data.data as unknown as DOMRect);
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT:
-        new OptedOutEvent().handle(data.data as OptedOutEventHandleData);
+        this.onResult({ type: SdkResultValues.USER_OPTED_OUT });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION:
-        this.onSuccess(data.data as SuccessEventResponseData);
+        this.onResult({
+          type: SdkResultValues.USER_SHARED_CREDENTIALS,
+          identityUuid: data?.data?.identityUuid as string,
+        });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR:
-        this.onError(
-          new OneClickError(
-            ErrorReasons.SHARE_CREDENTIALS_ERROR,
-            data.data as unknown as ErrorAdditionalData
-          )
-        );
+        this.onError({ reason: SdkErrorReasons.SHARE_CREDENTIALS_ERROR });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_INVALID_SESSION_KEY:
-        this.onError(
-          new OneClickError(
-            ErrorReasons.INVALID_SESSION_KEY,
-            data.data as unknown as ErrorAdditionalData
-          )
-        );
+        this.onError({ reason: SdkErrorReasons.INVALID_SESSION_KEY });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_SESSION_TIMEOUT:
-        this.onError(
-          new OneClickError(
-            ErrorReasons.SESSION_TIMEOUT,
-            data.data as unknown as ErrorAdditionalData
-          )
-        );
+        this.onError({ reason: SdkErrorReasons.SESSION_TIMEOUT });
         break;
     }
   }

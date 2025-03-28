@@ -1,11 +1,10 @@
-import { OneClickError, SuccessEventResponseData } from '@sdk/types';
+import { SdkError, SdkResult } from '@sdk/types';
 
 export interface ClientOptions {
   environment?: string;
   sessionKey: string;
-  onReady?: () => void;
-  onSuccess?: (data: SuccessEventResponseData) => void;
-  onError?: (error: OneClickError) => void;
+  onResult?: (data: SdkResult) => void;
+  onError?: (error: SdkError) => void;
 }
 
 export interface ClientInterface {
