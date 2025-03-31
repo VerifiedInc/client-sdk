@@ -22,7 +22,7 @@ export class Iframe {
       sandbox:
         'allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation',
       style:
-        'display: none; border: none; width: 100%; height: 100%; max-width: 500px; min-width: min(500px, 100%); overflow: hidden; margin: auto;',
+        'display: none; border: none; width: 100%; height: 100%; max-width: 396px; min-width: min(396px, 100%); overflow: hidden; margin: auto;',
     };
 
     // Apply default attributes
