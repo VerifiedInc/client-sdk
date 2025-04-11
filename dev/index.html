@@ -16,12 +16,47 @@
       <div id="sdk-container"></div>
     </div>
     <script type="module" src="/main.ts"></script>
+
+    <!-- Uncomment the following to test the UMD bundle -->
+    <!-- Copy the dist folder and add in dev folder -->
     <!-- <script type="module" src="/dist/index.umd.js" type="module"></script>
     <script type="module">
       function main() {
         const sdk = new Verified.VerifiedClientSdk({
           environment: 'local',
           sessionKey: 'SESSION_KEY',
+          onResult: handleSuccess,
+          onError: handleError,
+        });
+
+        function handleSuccess(data) {
+          if (data.type === SdkResultValues.USER_SHARED_CREDENTIALS) {
+            console.log('Verified Client SDK result: User shared credentials', data);
+          }
+          if (data.type === SdkResultValues.USER_OPTED_OUT) {
+            console.log('Verified Client SDK result: User opted out');
+          }
+        }
+
+        function handleError(error) {
+          console.error('Verified Client SDK error:', error.reason);
+        }
+
+        // Show the SDK
+        sdk.show(document.getElementById('sdk-container'));
+      }
+
+      main();
+    </script> -->
+
+    <!-- Uncomment the following to test the IIFE bundle -->
+    <!-- Copy the dist folder and add in dev folder -->
+    <!-- <script src="./dist/index.iife.js"></script>
+    <script>
+      function main() {
+        const sdk = new Verified.VerifiedClientSdk({
+          environment: 'local',
+          sessionKey: '077e1684-ddf3-49db-ad2a-be944494f286',
           onResult: handleSuccess,
           onError: handleError,
         });
