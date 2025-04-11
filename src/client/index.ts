@@ -7,7 +7,7 @@ import { Iframe } from '@sdk/client/iframe/iframe';
 import { IframeConfig } from '@sdk/client/iframe/iframe-config';
 import { IframeEventManager } from '@sdk/client/iframe/iframe-event-manager';
 
-export class VerifiedClientSDK implements ClientInterface {
+export class VerifiedClientSdk implements ClientInterface {
   private readonly iframe: Iframe;
   private readonly iframeConfig: IframeConfig;
   private readonly iframeEventManager: IframeEventManager;
@@ -60,7 +60,7 @@ export class VerifiedClientSDK implements ClientInterface {
 
 // Create the Verified namespace and attach to window
 const Verified = {
-  Client: VerifiedClientSDK,
+  Client: VerifiedClientSdk,
 };
 
 // If running in the browser, attach to window

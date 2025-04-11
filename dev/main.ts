@@ -1,5 +1,5 @@
 import {
-  VerifiedClientSDK,
+  VerifiedClientSdk,
   SdkResult,
   SdkError,
   SdkResultValues,
@@ -7,9 +7,9 @@ import {
 } from '@sdk/index';
 
 function main() {
-  const sdk = new VerifiedClientSDK({
+  const sdk = new VerifiedClientSdk({
     environment: 'local',
-    sessionKey: '5a15930f-0a7e-49c2-8747-14c45b615944',
+    sessionKey: '7215bfd6-f672-4df2-87f3-3e847fea61c7',
     onResult: handleResult,
     onError: handleError,
   });
@@ -31,7 +31,7 @@ function main() {
       // Call POST /sessionKey on server
       case SdkErrorReasons.SESSION_TIMEOUT:
       // Call POST /sessionKey on server
-      // Create new VerifiedClientSDK instance
+      // Create new VerifiedClientSdk instance
       case SdkErrorReasons.SHARE_CREDENTIALS_ERROR:
       // Do something reasonable
     }

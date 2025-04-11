@@ -1,5 +1,4 @@
 import { EventSource, PossibleEventTypes, SdkErrorReasons, SdkResultValues } from '@sdk/values';
-export { SdkError as SDKError } from '@sdk/errors/one-click-error';
 
 export type SdkResult =
   | {

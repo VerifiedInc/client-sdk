@@ -24,7 +24,7 @@ npm install @verifiedinc-public/client-sdk
 import * as VerifiedClient from '@verifiedinc-public/client-sdk';
 
 // Initialize the client
-const client = new VerifiedClient.VerifiedClientSDK({
+const client = new VerifiedClient.VerifiedClientSdk({
   // Configuration options
   publicKey: 'pub_test-key',
   onResult: handleSuccess,
