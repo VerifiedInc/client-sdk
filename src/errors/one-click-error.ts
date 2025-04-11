@@ -1,6 +1,6 @@
 import { SdkErrorReasons } from '@sdk/values';
 
-export class SdkError extends Error {
+export class SdkErrorClass extends Error {
   public readonly reason: keyof typeof SdkErrorReasons;
 
   constructor(reason: keyof typeof SdkErrorReasons) {
