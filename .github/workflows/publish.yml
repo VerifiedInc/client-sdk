@@ -3,16 +3,17 @@ name: publish
 permissions:
   packages: write
   contents: write
+  id-token: write # Required for AWS authentication
 
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
-  releaseJob:
+  publishToNpm:
     permissions: write-all
-    name: Update version & deploy
+    name: Publish to NPM
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -87,7 +88,7 @@ jobs:
         uses: leigholiver/commit-with-deploy-key@v1.0.4
         with:
           source: .
-          commit_message: "[Release ${{ env.RELEASE_VERSION }}] ${{ env.TAG_MESSAGE }}"
+          commit_message: '[Release ${{ env.RELEASE_VERSION }}] ${{ env.TAG_MESSAGE }}'
           destination_repo: verifiedinc/client-sdk
           deploy_key: ${{ secrets.DEPLOY_KEY }}
           git_username: VerifiedIncMachine
@@ -105,3 +106,42 @@ jobs:
           draft: false
           prerelease: false
           target_commitish: main
+
+  publishToS3:
+    name: Publish to S3
+    needs: publishToNpm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Set version env
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Sync dist files to S3
+        run: |
+          aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET }}/client-sdk/v${{ env.RELEASE_VERSION }}/
+          echo "Successfully published to s3://${{ secrets.AWS_S3_BUCKET }}/client-sdk/v${{ env.RELEASE_VERSION }}/"
+
+      - name: Copy to latest folder
+        run: |
+          aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET }}/client-sdk/latest/
+          echo "Successfully published to s3://${{ secrets.AWS_S3_BUCKET }}/client-sdk/latest/"
