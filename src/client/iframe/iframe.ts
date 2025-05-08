@@ -58,11 +58,9 @@ export class Iframe {
   }
 
   public dispose(): void {
-    if (this.element && this.element.parentElement) {
-      // Remove iframe from the DOM
-      this.element.parentElement.removeChild(this.element);
+    if (this.element?.parentElement) {
       // Remove container div from the DOM
-      this.element.parentElement.remove();
+      this.element.parentElement?.remove();
     }
 
     if (this.loader) {
