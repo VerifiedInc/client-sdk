@@ -9,7 +9,7 @@ import {
 function main() {
   const sdk = new VerifiedClientSdk({
     environment: 'local',
-    sessionKey: '7215bfd6-f672-4df2-87f3-3e847fea61c7',
+    sessionKey: '23f50376-7b5b-4daa-87c3-bd252f40ea0d',
     onResult: handleResult,
     onError: handleError,
   });
@@ -19,7 +19,7 @@ function main() {
       console.log('Verified Client SDK result: User shared credentials', data);
     }
     if (data.type === SdkResultValues.USER_OPTED_OUT) {
-      console.log('Verified Client SDK result: User opted out');
+      console.log('Verified Client SDK result: User opted out', data);
     }
   }
 
