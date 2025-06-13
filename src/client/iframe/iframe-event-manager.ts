@@ -50,7 +50,7 @@ export class IframeEventManager {
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT:
         this.onResult({
           type: SdkResultValues.USER_OPTED_OUT,
-          redirectUrl: data?.data?.redirectUrl as string,
+          redirectUrl: data?.data?.redirectUrl as string | null,
           identityUuid: data?.data?.identityUuid as string | null,
           birthDate: data?.data?.birthDate as string | null,
           phone: data?.data?.phone as string | null,
@@ -60,7 +60,7 @@ export class IframeEventManager {
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION:
         this.onResult({
           type: SdkResultValues.USER_SHARED_CREDENTIALS,
-          redirectUrl: data?.data?.redirectUrl as string,
+          redirectUrl: data?.data?.redirectUrl as string | null,
           identityUuid: data?.data?.identityUuid as string,
           birthDate: data?.data?.birthDate as string | null,
           phone: data?.data?.phone as string | null,
