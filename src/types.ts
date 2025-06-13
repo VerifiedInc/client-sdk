@@ -4,9 +4,18 @@ export type SdkResult =
   | {
       type: typeof SdkResultValues.USER_SHARED_CREDENTIALS;
       identityUuid: string;
+      redirectUrl: string | null;
+      birthDate: string | null;
+      phone: string | null;
+      ssn4: string | null;
     }
   | {
       type: typeof SdkResultValues.USER_OPTED_OUT;
+      identityUuid: string | null;
+      redirectUrl: string | null;
+      birthDate: string | null;
+      phone: string | null;
+      ssn4: string | null;
     };
 
 export type SdkError = {

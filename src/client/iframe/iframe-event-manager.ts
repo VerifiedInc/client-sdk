@@ -48,12 +48,23 @@ export class IframeEventManager {
         new ViewportResizeEvent(this.iframe).handle(data.data as unknown as DOMRect);
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT:
-        this.onResult({ type: SdkResultValues.USER_OPTED_OUT });
+        this.onResult({
+          type: SdkResultValues.USER_OPTED_OUT,
+          redirectUrl: data?.data?.redirectUrl as string,
+          identityUuid: data?.data?.identityUuid as string | null,
+          birthDate: data?.data?.birthDate as string | null,
+          phone: data?.data?.phone as string | null,
+          ssn4: data?.data?.ssn4 as string | null,
+        });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION:
         this.onResult({
           type: SdkResultValues.USER_SHARED_CREDENTIALS,
+          redirectUrl: data?.data?.redirectUrl as string,
           identityUuid: data?.data?.identityUuid as string,
+          birthDate: data?.data?.birthDate as string | null,
+          phone: data?.data?.phone as string | null,
+          ssn4: data?.data?.ssn4 as string | null,
         });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR:
