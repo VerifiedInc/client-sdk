@@ -48,6 +48,7 @@ export class IframeEventManager {
         new ViewportResizeEvent(this.iframe).handle(data.data as unknown as DOMRect);
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT:
+        this.invariantMessageData(data);
         this.onResult({
           type: SdkResultValues.USER_OPTED_OUT,
           redirectUrl: data?.data?.redirectUrl as string | null,
@@ -58,6 +59,7 @@ export class IframeEventManager {
         });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION:
+        this.invariantMessageData(data);
         this.onResult({
           type: SdkResultValues.USER_SHARED_CREDENTIALS,
           redirectUrl: data?.data?.redirectUrl as string | null,
@@ -76,6 +78,44 @@ export class IframeEventManager {
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_SESSION_TIMEOUT:
         this.onError({ reason: SdkErrorReasons.SESSION_TIMEOUT });
         break;
+    }
+  }
+
+  /**
+   * Validates the message data.
+   *
+   * @param data - The message data to validate
+   */
+  private invariantMessageData(data: ClientMessageEvent) {
+    if (
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT &&
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION
+    ) {
+      throw new Error('Invalid message type');
+    }
+
+    if (typeof data.data !== 'object' || data.data === null) {
+      throw new Error('Invalid message data');
+    }
+
+    if (typeof data.data.redirectUrl !== 'string' && data.data.redirectUrl !== null) {
+      throw new Error('Invalid redirectUrl data');
+    }
+
+    if (typeof data.data.identityUuid !== 'string' && data.data.identityUuid !== null) {
+      throw new Error('Invalid identityUuid data');
+    }
+
+    if (typeof data.data.birthDate !== 'string' && data.data.birthDate !== null) {
+      throw new Error('Invalid birthDate data');
+    }
+
+    if (typeof data.data.phone !== 'string' && data.data.phone !== null) {
+      throw new Error('Invalid phone data');
+    }
+
+    if (typeof data.data.ssn4 !== 'string' && data.data.ssn4 !== null) {
+      throw new Error('Invalid ssn4 data');
     }
   }
 }
