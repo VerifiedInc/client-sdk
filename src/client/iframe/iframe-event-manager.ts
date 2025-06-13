@@ -94,7 +94,14 @@ export class IframeEventManager {
       throw new Error('Invalid message type');
     }
 
-    if (typeof data.data !== 'object' || data.data === null) {
+    // Ensures data is an object
+    if (
+      !(
+        typeof data.data === 'object' &&
+        data.data !== null &&
+        Object.prototype.toString.call(data.data) === '[object Object]'
+      )
+    ) {
       throw new Error('Invalid message data');
     }
 
