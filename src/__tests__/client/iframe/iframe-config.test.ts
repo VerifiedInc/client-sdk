@@ -83,7 +83,7 @@ describe('IframeConfig', () => {
     const environment = 'unknown';
 
     // Act
-    const config = new IframeConfig(sessionKey, environment as any);
+    const config = new IframeConfig(sessionKey, environment);
 
     // Assert
     expect(config.origin).toBe('https://1-click.verified.inc');
