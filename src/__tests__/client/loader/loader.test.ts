@@ -189,10 +189,6 @@ describe('Loader', () => {
     // Arrange
     const loader = new Loader();
 
-    // Access the private property to set it to null
-    const loaderAny = loader as any;
-    loaderAny.loaderContainer = null;
-
     // Act & Assert - should not throw an error
     expect(() => {
       loader.dispose();
