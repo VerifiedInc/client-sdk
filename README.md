@@ -102,3 +102,7 @@ This will generate the following outputs:
 - ESM bundle
 - UMD bundle
 - TypeScript declaration files
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
