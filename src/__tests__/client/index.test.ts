@@ -4,6 +4,7 @@ import { Iframe } from '@sdk/client/iframe/iframe';
 import { IframeConfig } from '@sdk/client/iframe/iframe-config';
 import { IframeEventManager } from '@sdk/client/iframe/iframe-event-manager';
 import { SdkResultValues } from '@sdk/values';
+import { simulateWindowCheck } from './window-test-helper';
 
 // Mock dependencies
 jest.mock('@sdk/client/iframe/iframe');
@@ -53,7 +54,7 @@ describe('VerifiedClientSdk', () => {
     expect(options.onError).toHaveBeenCalledWith({ reason: SdkErrorReasons.INVALID_SESSION_KEY });
   });
 
-  it('should show iframe when ready', () => {
+  it('should show iframe when ready with provided element', () => {
     // Arrange
     const options = {
       sessionKey: 'valid-session-key',
@@ -71,6 +72,24 @@ describe('VerifiedClientSdk', () => {
 
     // Assert
     expect(mockIframe.make).toHaveBeenCalledWith(mockElement);
+    expect((IframeEventManager as jest.Mock).mock.instances[0].addListener).toHaveBeenCalled();
+  });
+
+  it('should show iframe when ready with document.body when no element is provided', () => {
+    // Arrange
+    const options = {
+      sessionKey: 'valid-session-key',
+      environment: 'local',
+    };
+    const client = new VerifiedClientSdk(options);
+    const mockIframe = (Iframe as jest.Mock).mock.instances[0];
+    mockIframe.element = null;
+
+    // Act
+    client.show();
+
+    // Assert
+    expect(mockIframe.make).toHaveBeenCalledWith(document.body);
     expect((IframeEventManager as jest.Mock).mock.instances[0].addListener).toHaveBeenCalled();
   });
 
@@ -218,6 +237,11 @@ describe('VerifiedClientSdk Global Namespace', () => {
   beforeEach(() => {
     // Clear the module cache to ensure fresh imports
     jest.resetModules();
+
+    // Restore window if it was deleted
+    if (!global.window) {
+      global.window = {} as Window & typeof globalThis;
+    }
   });
 
   it('should attach Client to existing Verified namespace on window', () => {
