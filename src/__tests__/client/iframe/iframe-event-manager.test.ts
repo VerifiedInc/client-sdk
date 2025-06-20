@@ -2,10 +2,12 @@ import {
   IframeEventManager,
   IframeEventManagerOptions,
 } from '@sdk/client/iframe/iframe-event-manager';
+
+// We'll test validation through the public interface
 import { Iframe } from '@sdk/client/iframe/iframe';
 import { IframeConfig } from '@sdk/client/iframe/iframe-config';
 import { IframeMessageManager } from '@sdk/client/iframe/iframe-message-manager';
-import { PossibleEventTypes, SdkErrorReasons, SdkResultValues } from '@sdk/values';
+import { PossibleEventTypes, SdkErrorReasons, SdkResultValues, EventSource } from '@sdk/values';
 import { ClientMessageEvent } from '@sdk/types';
 import { ViewportReadyEvent } from '@sdk/client/iframe/events/viewport-ready.event';
 import { ViewportResizeEvent } from '@sdk/client/iframe/events/viewport-resize.event';
@@ -217,37 +219,79 @@ describe('IframeEventManager', () => {
     expect(mockOnError).toHaveBeenCalledWith({ reason: SdkErrorReasons.SESSION_TIMEOUT });
   });
 
-  // Tests for validation logic in invariantMessageData method
-  describe('invariantMessageData validation', () => {
+  // Tests for validation logic through the public interface
+  describe('Message validation', () => {
+    let onMessageHandler: (event: ClientMessageEvent) => void;
+
+    beforeEach(() => {
+      // Reset mocks
+      jest.clearAllMocks();
+
+      // Create a new instance with fresh mocks
+      mockOnResult = jest.fn();
+      mockOnError = jest.fn();
+
+      options = {
+        iframe: mockIframe,
+        iframeConfig: mockIframeConfig,
+        onResult: mockOnResult,
+        onError: mockOnError,
+      };
+
+      // Capture the onMessage handler that will be passed to IframeMessageManager
+      (IframeMessageManager as jest.Mock).mockImplementation(({ onMessage }) => {
+        onMessageHandler = onMessage;
+        return mockIframeMessageManager;
+      });
+
+      // Initialize with our mocks
+      eventManager = new IframeEventManager(options);
+    });
+
     it('should throw error for invalid message type', () => {
       // Arrange
-      const mockData = {
-        type: 'INVALID_TYPE',
-        data: {},
+      // Create a message with an invalid type to trigger the specific error
+      const mockData: ClientMessageEvent = {
+        // Use an invalid type that will trigger the 'Invalid message type' error
+        type: 'INVALID_TYPE' as unknown as (typeof PossibleEventTypes)[keyof typeof PossibleEventTypes],
+        data: {
+          redirectUrl: 'https://example.com',
+          identityUuid: 'test-uuid',
+          birthDate: null,
+          phone: null,
+          ssn4: null,
+        },
+        source: EventSource,
+        timestamp: Date.now(),
       };
 
       // Act & Assert
       expect(() => {
-        (eventManager as any).invariantMessageData(mockData);
+        // We need to directly call invariantMessageData to test this specific error
+        // @ts-ignore - Accessing private method for testing
+        eventManager.invariantMessageData(mockData);
       }).toThrow('Invalid message type');
     });
 
     it('should throw error for invalid message data (not an object)', () => {
       // Arrange
-      const mockData = {
+      const mockData: ClientMessageEvent = {
         type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT,
-        data: 'not an object',
+        data: 'not an object' as unknown as Record<string, unknown>,
+        source: EventSource,
+        timestamp: Date.now(),
       };
 
       // Act & Assert
       expect(() => {
-        (eventManager as any).invariantMessageData(mockData);
+        // Call the handler that was captured during initialization
+        onMessageHandler(mockData);
       }).toThrow('Invalid message data');
     });
 
     it('should throw error for invalid redirectUrl data', () => {
       // Arrange
-      const mockData = {
+      const mockData: ClientMessageEvent = {
         type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT,
         data: {
           redirectUrl: 123, // Invalid type
@@ -256,17 +300,20 @@ describe('IframeEventManager', () => {
           phone: 'valid-phone',
           ssn4: 'valid-ssn',
         },
+        source: EventSource,
+        timestamp: Date.now(),
       };
 
       // Act & Assert
       expect(() => {
-        (eventManager as any).invariantMessageData(mockData);
+        // Call the handler that was captured during initialization
+        onMessageHandler(mockData);
       }).toThrow('Invalid redirectUrl data');
     });
 
     it('should throw error for invalid identityUuid data', () => {
       // Arrange
-      const mockData = {
+      const mockData: ClientMessageEvent = {
         type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT,
         data: {
           redirectUrl: 'https://example.com',
@@ -275,17 +322,20 @@ describe('IframeEventManager', () => {
           phone: 'valid-phone',
           ssn4: 'valid-ssn',
         },
+        source: EventSource,
+        timestamp: Date.now(),
       };
 
       // Act & Assert
       expect(() => {
-        (eventManager as any).invariantMessageData(mockData);
+        // Call the handler that was captured during initialization
+        onMessageHandler(mockData);
       }).toThrow('Invalid identityUuid data');
     });
 
     it('should throw error for invalid birthDate data', () => {
       // Arrange
-      const mockData = {
+      const mockData: ClientMessageEvent = {
         type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT,
         data: {
           redirectUrl: 'https://example.com',
@@ -294,17 +344,20 @@ describe('IframeEventManager', () => {
           phone: 'valid-phone',
           ssn4: 'valid-ssn',
         },
+        source: EventSource,
+        timestamp: Date.now(),
       };
 
       // Act & Assert
       expect(() => {
-        (eventManager as any).invariantMessageData(mockData);
+        // Call the handler that was captured during initialization
+        onMessageHandler(mockData);
       }).toThrow('Invalid birthDate data');
     });
 
     it('should throw error for invalid phone data', () => {
       // Arrange
-      const mockData = {
+      const mockData: ClientMessageEvent = {
         type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT,
         data: {
           redirectUrl: 'https://example.com',
@@ -313,17 +366,20 @@ describe('IframeEventManager', () => {
           phone: 123, // Invalid type
           ssn4: 'valid-ssn',
         },
+        source: EventSource,
+        timestamp: Date.now(),
       };
 
       // Act & Assert
       expect(() => {
-        (eventManager as any).invariantMessageData(mockData);
+        // Call the handler that was captured during initialization
+        onMessageHandler(mockData);
       }).toThrow('Invalid phone data');
     });
 
     it('should throw error for invalid ssn4 data', () => {
       // Arrange
-      const mockData = {
+      const mockData: ClientMessageEvent = {
         type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT,
         data: {
           redirectUrl: 'https://example.com',
@@ -332,11 +388,14 @@ describe('IframeEventManager', () => {
           phone: 'valid-phone',
           ssn4: 123, // Invalid type
         },
+        source: EventSource,
+        timestamp: Date.now(),
       };
 
       // Act & Assert
       expect(() => {
-        (eventManager as any).invariantMessageData(mockData);
+        // Call the handler that was captured during initialization
+        onMessageHandler(mockData);
       }).toThrow('Invalid ssn4 data');
     });
   });
