@@ -42,7 +42,6 @@ describe('Iframe', () => {
           addEventListener: jest.fn(),
         } as unknown as HTMLIFrameElement;
       }
-      return {} as any;
     });
   });
 
@@ -101,7 +100,6 @@ describe('Iframe', () => {
       } else if (tagName === 'iframe') {
         return mockIframeElement;
       }
-      return {} as any;
     });
 
     // Act
@@ -188,7 +186,6 @@ describe('Iframe', () => {
       } else if (tagName === 'iframe') {
         return mockIframeElement;
       }
-      return {} as any;
     });
 
     // Act
