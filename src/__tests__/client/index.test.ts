@@ -4,7 +4,6 @@ import { Iframe } from '@sdk/client/iframe/iframe';
 import { IframeConfig } from '@sdk/client/iframe/iframe-config';
 import { IframeEventManager } from '@sdk/client/iframe/iframe-event-manager';
 import { SdkResultValues } from '@sdk/values';
-import { simulateWindowCheck } from './window-test-helper';
 
 // Mock dependencies
 jest.mock('@sdk/client/iframe/iframe');
