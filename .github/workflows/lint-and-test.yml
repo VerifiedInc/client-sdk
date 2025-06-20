@@ -76,6 +76,8 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
-          path: dist/
+          name: action-artifacts
+          path: |
+            dist/
+            coverage/
           retention-days: 7
