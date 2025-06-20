@@ -1,18 +1,18 @@
-import { resolve } from "path";
-import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig(({ command }) => {
-  if (command === "serve") {
+  if (command === 'serve') {
     // Development config
     return {
-      root: resolve(__dirname, "dev"),
+      root: resolve(__dirname, 'dev'),
       server: {
         port: 5173,
       },
       resolve: {
         alias: {
-          "@sdk": resolve(__dirname, "src"),
+          '@sdk': resolve(__dirname, 'src'),
         },
       },
     };
@@ -21,10 +21,10 @@ export default defineConfig(({ command }) => {
   return {
     build: {
       lib: {
-        entry: resolve(__dirname, "src/index.ts"),
-        name: "Verified",
+        entry: resolve(__dirname, 'src/index.ts'),
+        name: 'Verified',
         fileName: (format) => `index.${format}.js`,
-        formats: ["esm", "umd"],
+        formats: ['esm', 'umd'],
       },
       rollupOptions: {
         external: [], // Add external dependencies here if needed
@@ -35,15 +35,15 @@ export default defineConfig(({ command }) => {
     },
     resolve: {
       alias: {
-        "@sdk": resolve(__dirname, "src"),
+        '@sdk': resolve(__dirname, 'src'),
       },
     },
     plugins: [
       dts({
         rollupTypes: true,
-        outDir: "dist",
-        include: ["src"],
-        exclude: ["dev", "dist"],
+        outDir: 'dist',
+        include: ['src'],
+        exclude: ['dev', 'dist', '__tests__'],
       }),
     ],
   };
