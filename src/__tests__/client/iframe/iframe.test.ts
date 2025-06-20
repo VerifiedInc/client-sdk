@@ -157,6 +157,33 @@ describe('Iframe', () => {
     expect(iframe.loader).toBeNull();
   });
 
+  it('should dispose iframe correctly when loader is null', () => {
+    // Arrange
+    const iframe = new Iframe(mockIframeConfig);
+
+    // Create a mock for parentElement with a remove method
+    const mockRemove = jest.fn();
+    const mockParentElement = {
+      remove: mockRemove,
+    };
+
+    // Set element with parentElement to test that branch
+    iframe.element = {
+      parentElement: mockParentElement,
+    } as unknown as HTMLIFrameElement;
+
+    // Explicitly set loader to null to test that branch
+    iframe.loader = null;
+
+    // Act
+    iframe.dispose();
+
+    // Assert
+    expect(mockRemove).toHaveBeenCalled();
+    expect(iframe.element).toBeNull();
+    expect(iframe.loader).toBeNull();
+  });
+
   it('should handle iframe load event', () => {
     // Arrange
     const iframe = new Iframe(mockIframeConfig);
