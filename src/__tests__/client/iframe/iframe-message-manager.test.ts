@@ -88,7 +88,7 @@ describe('IframeMessageManager', () => {
     (parseMessageEvent as jest.Mock).mockReturnValue(mockData);
 
     // Get the handleMessage function
-    const addListenerSpy = jest.spyOn(messageManager, 'addListener');
+    jest.spyOn(messageManager, 'addListener');
     messageManager.addListener();
     const handleMessage = (window.addEventListener as jest.Mock).mock.calls[0][1];
 

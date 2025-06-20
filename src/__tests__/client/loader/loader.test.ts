@@ -121,7 +121,7 @@ describe('Loader', () => {
       return {};
     });
 
-    (document.createElementNS as jest.Mock).mockImplementation((namespace, tagName) => {
+    (document.createElementNS as jest.Mock).mockImplementation((_, tagName) => {
       if (tagName === 'svg') return mockSvg;
       if (tagName === 'circle') return mockCircle;
       return {};
