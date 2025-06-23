@@ -149,6 +149,118 @@ describe('IframeEventManager', () => {
     });
   });
 
+  it('should handle no credentials found event', () => {
+    // Arrange
+    const mockHandleMessage = (IframeMessageManager as jest.Mock).mock.calls[0][0].onMessage;
+    const mockEvent = {
+      type: PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND,
+      data: {
+        redirectUrl: 'https://example.com',
+        identityUuid: '123',
+        birthDate: '1990-01-01',
+        phone: '1234567890',
+        ssn4: '1234',
+      },
+    } as unknown as ClientMessageEvent;
+
+    // Act
+    mockHandleMessage(mockEvent);
+
+    // Assert
+    expect(mockOnResult).toHaveBeenCalledWith({
+      type: SdkResultValues.NO_CREDENTIALS_FOUND,
+      redirectUrl: 'https://example.com',
+      identityUuid: '123',
+      birthDate: '1990-01-01',
+      phone: '1234567890',
+      ssn4: '1234',
+    });
+  });
+
+  it('should handle risk score too high event', () => {
+    // Arrange
+    const mockHandleMessage = (IframeMessageManager as jest.Mock).mock.calls[0][0].onMessage;
+    const mockEvent = {
+      type: PossibleEventTypes.VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH,
+      data: {
+        redirectUrl: 'https://example.com',
+        identityUuid: '123',
+        birthDate: '1990-01-01',
+        phone: '1234567890',
+        ssn4: '1234',
+      },
+    } as unknown as ClientMessageEvent;
+
+    // Act
+    mockHandleMessage(mockEvent);
+
+    // Assert
+    expect(mockOnResult).toHaveBeenCalledWith({
+      type: SdkResultValues.RISK_SCORE_TOO_HIGH,
+      redirectUrl: 'https://example.com',
+      identityUuid: '123',
+      birthDate: '1990-01-01',
+      phone: '1234567890',
+      ssn4: '1234',
+    });
+  });
+
+  it('should handle max input attempts exceeded event', () => {
+    // Arrange
+    const mockHandleMessage = (IframeMessageManager as jest.Mock).mock.calls[0][0].onMessage;
+    const mockEvent = {
+      type: PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_INPUT_ATTEMPTS_EXCEEDED,
+      data: {
+        redirectUrl: 'https://example.com',
+        identityUuid: '123',
+        birthDate: '1990-01-01',
+        phone: '1234567890',
+        ssn4: '1234',
+      },
+    } as unknown as ClientMessageEvent;
+
+    // Act
+    mockHandleMessage(mockEvent);
+
+    // Assert
+    expect(mockOnResult).toHaveBeenCalledWith({
+      type: SdkResultValues.MAX_INPUT_ATTEMPTS_EXCEEDED,
+      redirectUrl: 'https://example.com',
+      identityUuid: '123',
+      birthDate: '1990-01-01',
+      phone: '1234567890',
+      ssn4: '1234',
+    });
+  });
+
+  it('should handle max otp attempts exceeded event', () => {
+    // Arrange
+    const mockHandleMessage = (IframeMessageManager as jest.Mock).mock.calls[0][0].onMessage;
+    const mockEvent = {
+      type: PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_OTP_ATTEMPTS_EXCEEDED,
+      data: {
+        redirectUrl: 'https://example.com',
+        identityUuid: '123',
+        birthDate: '1990-01-01',
+        phone: '1234567890',
+        ssn4: '1234',
+      },
+    } as unknown as ClientMessageEvent;
+
+    // Act
+    mockHandleMessage(mockEvent);
+
+    // Assert
+    expect(mockOnResult).toHaveBeenCalledWith({
+      type: SdkResultValues.MAX_OTP_ATTEMPTS_EXCEEDED,
+      redirectUrl: 'https://example.com',
+      identityUuid: '123',
+      birthDate: '1990-01-01',
+      phone: '1234567890',
+      ssn4: '1234',
+    });
+  });
+
   it('should handle form submission event', () => {
     // Arrange
     const mockHandleMessage = (IframeMessageManager as jest.Mock).mock.calls[0][0].onMessage;
