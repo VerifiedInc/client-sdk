@@ -1,4 +1,4 @@
-import { ClientMessageEvent, SdkResult, SdkError } from '@sdk/types';
+import { ClientMessageEvent, SdkResult, SdkError, SdkStep } from '@sdk/types';
 import { SdkErrorReasons, PossibleEventTypes, SdkResultValues } from '@sdk/values';
 
 import { Iframe } from '@sdk/client/iframe/iframe';
@@ -50,23 +50,43 @@ export class IframeEventManager {
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT:
         this.invariantMessageData(data);
         this.onResult({
+          ...this.buildMessageData(data),
           type: SdkResultValues.USER_OPTED_OUT,
-          redirectUrl: data?.data?.redirectUrl as string | null,
-          identityUuid: data?.data?.identityUuid as string | null,
-          birthDate: data?.data?.birthDate as string | null,
-          phone: data?.data?.phone as string | null,
-          ssn4: data?.data?.ssn4 as string | null,
         });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION:
         this.invariantMessageData(data);
         this.onResult({
+          ...this.buildMessageData(data),
           type: SdkResultValues.USER_SHARED_CREDENTIALS,
-          redirectUrl: data?.data?.redirectUrl as string | null,
-          identityUuid: data?.data?.identityUuid as string,
-          birthDate: data?.data?.birthDate as string | null,
-          phone: data?.data?.phone as string | null,
-          ssn4: data?.data?.ssn4 as string | null,
+        });
+        break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND:
+        this.invariantMessageData(data);
+        this.onResult({
+          ...this.buildMessageData(data),
+          type: SdkResultValues.NO_CREDENTIALS_FOUND,
+        });
+        break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH:
+        this.invariantMessageData(data);
+        this.onResult({
+          ...this.buildMessageData(data),
+          type: SdkResultValues.RISK_SCORE_TOO_HIGH,
+        });
+        break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_INPUT_ATTEMPTS_EXCEEDED:
+        this.invariantMessageData(data);
+        this.onResult({
+          ...this.buildMessageData(data),
+          type: SdkResultValues.MAX_INPUT_ATTEMPTS_EXCEEDED,
+        });
+        break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_OTP_ATTEMPTS_EXCEEDED:
+        this.invariantMessageData(data);
+        this.onResult({
+          ...this.buildMessageData(data),
+          type: SdkResultValues.MAX_OTP_ATTEMPTS_EXCEEDED,
         });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR:
@@ -89,7 +109,11 @@ export class IframeEventManager {
   private invariantMessageData(data: ClientMessageEvent) {
     if (
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT &&
-      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION &&
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND &&
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH &&
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_INPUT_ATTEMPTS_EXCEEDED &&
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_OTP_ATTEMPTS_EXCEEDED
     ) {
       throw new Error('Invalid message type');
     }
@@ -124,5 +148,24 @@ export class IframeEventManager {
     if (typeof data.data.ssn4 !== 'string' && data.data.ssn4 !== null) {
       throw new Error('Invalid ssn4 data');
     }
+  }
+
+  /**
+   * Builds the message data from the event.
+   *
+   * @param data - The ClientMessageEvent received from the iframe
+   * @returns The message data
+   */
+  private buildMessageData(data: ClientMessageEvent) {
+    return {
+      redirectUrl: data.data?.redirectUrl as string | null,
+      identityUuid: data.data?.identityUuid as string,
+      birthDate: data.data?.birthDate as string | null,
+      birthDateMismatched: data.data?.birthDateMismatched as boolean | null,
+      phone: data.data?.phone as string | null,
+      ssn4: data.data?.ssn4 as string | null,
+      ssn4Mismatched: data.data?.ssn4Mismatched as boolean | null,
+      step: data.data?.step as SdkStep,
+    };
   }
 }
