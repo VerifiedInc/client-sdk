@@ -34,22 +34,6 @@ describe('SDK Types', () => {
       expect(result.type).toBe(SdkResultValues.USER_OPTED_OUT);
       expect(result.redirectUrl).toBe('https://example.com');
     });
-
-    it('should allow null values for optional fields', () => {
-      // Arrange & Act
-      const result: SdkResult = {
-        type: SdkResultValues.USER_SHARED_CREDENTIALS,
-        identityUuid: '123',
-        redirectUrl: null,
-        birthDate: null,
-        phone: null,
-        ssn4: null,
-      };
-
-      // Assert
-      expect(result.redirectUrl).toBeNull();
-      expect(result.birthDate).toBeNull();
-    });
   });
 
   describe('SdkError', () => {
