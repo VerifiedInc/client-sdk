@@ -4,7 +4,7 @@ type Nullable<T> = {
   [K in keyof T]: T[K] | null;
 };
 
-export type SdkStep = 'consent' | 'phone' | 'otp' | 'birthday' | 'ssn4' | 'prefill';
+export type SdkStep = 'consent' | 'phone' | 'verificationCode' | 'birthday' | 'ssn4' | 'info';
 
 type SdkResultData = {
   identityUuid: string;
