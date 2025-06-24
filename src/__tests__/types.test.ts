@@ -10,8 +10,11 @@ describe('SDK Types', () => {
         identityUuid: '123',
         redirectUrl: 'https://example.com',
         birthDate: '1990-01-01',
+        birthDateMismatched: null,
         phone: '1234567890',
         ssn4: '1234',
+        ssn4Mismatched: null,
+        step: 'info',
       };
 
       // Assert
@@ -26,8 +29,11 @@ describe('SDK Types', () => {
         identityUuid: null,
         redirectUrl: 'https://example.com',
         birthDate: null,
+        birthDateMismatched: null,
         phone: null,
         ssn4: null,
+        ssn4Mismatched: null,
+        step: 'phone',
       };
 
       // Assert
