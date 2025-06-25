@@ -237,7 +237,7 @@ describe('IframeEventManager', () => {
     // Arrange
     const mockHandleMessage = (IframeMessageManager as jest.Mock).mock.calls[0][0].onMessage;
     const mockEvent = {
-      type: PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_OTP_ATTEMPTS_EXCEEDED,
+      type: PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED,
       data: {
         redirectUrl: 'https://example.com',
         identityUuid: '123',
@@ -252,7 +252,7 @@ describe('IframeEventManager', () => {
 
     // Assert
     expect(mockOnResult).toHaveBeenCalledWith({
-      type: SdkResultValues.MAX_OTP_ATTEMPTS_EXCEEDED,
+      type: SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED,
       redirectUrl: 'https://example.com',
       identityUuid: '123',
       birthDate: '1990-01-01',

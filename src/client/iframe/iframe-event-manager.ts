@@ -82,11 +82,11 @@ export class IframeEventManager {
           type: SdkResultValues.MAX_INPUT_ATTEMPTS_EXCEEDED,
         });
         break;
-      case PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_OTP_ATTEMPTS_EXCEEDED:
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED:
         this.invariantMessageData(data);
         this.onResult({
           ...this.buildMessageData(data),
-          type: SdkResultValues.MAX_OTP_ATTEMPTS_EXCEEDED,
+          type: SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED,
         });
         break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR:
@@ -113,7 +113,7 @@ export class IframeEventManager {
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_INPUT_ATTEMPTS_EXCEEDED &&
-      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_OTP_ATTEMPTS_EXCEEDED
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED
     ) {
       throw new Error('Invalid message type');
     }

@@ -42,7 +42,7 @@ type SdkResultMaxInputsAttemptsExceeded = {
 } & SdkResultData;
 
 type SdkResultMaxOtpAttemptsExceeded = {
-  type: typeof SdkResultValues.MAX_OTP_ATTEMPTS_EXCEEDED;
+  type: typeof SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED;
 } & SdkResultData;
 
 type SdkResultUserSharedCredentials = {

@@ -31,7 +31,7 @@ function main() {
       case SdkResultValues.MAX_INPUT_ATTEMPTS_EXCEEDED:
         console.log('Verified Client SDK result: Max input attempts exceeded', data);
         break;
-      case SdkResultValues.MAX_OTP_ATTEMPTS_EXCEEDED:
+      case SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED:
         console.log('Verified Client SDK result: Max OTP attempts exceeded', data);
         break;
     }
