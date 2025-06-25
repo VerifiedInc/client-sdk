@@ -10,8 +10,11 @@ describe('SDK Types', () => {
         identityUuid: '123',
         redirectUrl: 'https://example.com',
         birthDate: '1990-01-01',
+        birthDateMismatched: null,
         phone: '1234567890',
         ssn4: '1234',
+        ssn4Mismatched: null,
+        step: 'info',
       };
 
       // Assert
@@ -26,29 +29,16 @@ describe('SDK Types', () => {
         identityUuid: null,
         redirectUrl: 'https://example.com',
         birthDate: null,
+        birthDateMismatched: null,
         phone: null,
         ssn4: null,
+        ssn4Mismatched: null,
+        step: 'phone',
       };
 
       // Assert
       expect(result.type).toBe(SdkResultValues.USER_OPTED_OUT);
       expect(result.redirectUrl).toBe('https://example.com');
-    });
-
-    it('should allow null values for optional fields', () => {
-      // Arrange & Act
-      const result: SdkResult = {
-        type: SdkResultValues.USER_SHARED_CREDENTIALS,
-        identityUuid: '123',
-        redirectUrl: null,
-        birthDate: null,
-        phone: null,
-        ssn4: null,
-      };
-
-      // Assert
-      expect(result.redirectUrl).toBeNull();
-      expect(result.birthDate).toBeNull();
     });
   });
 

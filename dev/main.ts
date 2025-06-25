@@ -9,17 +9,31 @@ import {
 function main() {
   const sdk = new VerifiedClientSdk({
     environment: 'local',
-    sessionKey: '23f50376-7b5b-4daa-87c3-bd252f40ea0d',
+    sessionKey: '17b3fa73-6b88-45e4-835d-2113280e1005',
     onResult: handleResult,
     onError: handleError,
   });
 
   function handleResult(data: SdkResult) {
-    if (data.type === SdkResultValues.USER_SHARED_CREDENTIALS) {
-      console.log('Verified Client SDK result: User shared credentials', data);
-    }
-    if (data.type === SdkResultValues.USER_OPTED_OUT) {
-      console.log('Verified Client SDK result: User opted out', data);
+    switch (data.type) {
+      case SdkResultValues.USER_SHARED_CREDENTIALS:
+        console.log('Verified Client SDK result: User shared credentials', data);
+        break;
+      case SdkResultValues.USER_OPTED_OUT:
+        console.log('Verified Client SDK result: User opted out', data);
+        break;
+      case SdkResultValues.NO_CREDENTIALS_FOUND:
+        console.log('Verified Client SDK result: No credentials found', data);
+        break;
+      case SdkResultValues.RISK_SCORE_TOO_HIGH:
+        console.log('Verified Client SDK result: Risk score too high', data);
+        break;
+      case SdkResultValues.MAX_INPUT_ATTEMPTS_EXCEEDED:
+        console.log('Verified Client SDK result: Max input attempts exceeded', data);
+        break;
+      case SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED:
+        console.log('Verified Client SDK result: Max OTP attempts exceeded', data);
+        break;
     }
   }
 
