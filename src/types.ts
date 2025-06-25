@@ -41,7 +41,7 @@ type SdkResultMaxInputsAttemptsExceeded = {
   type: typeof SdkResultValues.MAX_INPUT_ATTEMPTS_EXCEEDED;
 } & SdkResultData;
 
-type SdkResultMaxOtpAttemptsExceeded = {
+type SdkResultMaxVerificationCodeAttemptsExceeded = {
   type: typeof SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED;
 } & SdkResultData;
 
@@ -54,7 +54,7 @@ export type SdkResult =
   | SdkResultNoCredentialsFound
   | SdkResultRiskScoreTooHigh
   | SdkResultMaxInputsAttemptsExceeded
-  | SdkResultMaxOtpAttemptsExceeded
+  | SdkResultMaxVerificationCodeAttemptsExceeded
   | SdkResultUserSharedCredentials;
 
 export type SdkError = {
