@@ -34,7 +34,7 @@ export class Iframe {
       sandbox:
         'allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation',
       style:
-        'display: block; border: none; width: 100%; height: 100%; min-height: 326px; max-width: 396px; min-width: min(396px, 100%); overflow: hidden; margin: auto; background-color: white;',
+        'display: block; border: none; width: 100%; height: 100%; min-height: 326px; max-width: 396px; min-width: min(396px, 100%); overflow: hidden; margin: auto;',
     };
 
     // Apply default attributes
