@@ -22,10 +22,10 @@ npm install @verifiedinc-public/client-sdk
 ## Usage
 
 ```typescript
-import * as VerifiedClient from '@verifiedinc-public/client-sdk';
+import { VerifiedClientSdk } from '@verifiedinc-public/client-sdk';
 
 // Initialize the client
-const client = new VerifiedClient.Client({
+const client = new VerifiedClientSdk({
   // Configuration options
   sessionKey: 'SESSION_KEY',
   onResult: handleResult,
