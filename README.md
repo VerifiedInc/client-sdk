@@ -22,18 +22,65 @@ npm install @verifiedinc-public/client-sdk
 ## Usage
 
 ```typescript
-import { VerifiedClientSdk } from '@verifiedinc-public/client-sdk';
+import {
+  VerifiedClientSdk,
+  SdkResult,
+  SdkError,
+  SdkResultValues,
+  SdkErrorReasons,
+} from '@verifiedinc-public/client-sdk';
 
-// Initialize the client
-const client = new VerifiedClientSdk({
-  // Configuration options
-  sessionKey: 'SESSION_KEY',
+// Initialize the SDK
+const sdk = new VerifiedClientSdk({
+  sessionKey: 'YOUR_SESSION_KEY',
   onResult: handleResult,
   onError: handleError,
 });
-```
 
-For a complete implementation example, see the [Example Implementation](#example-implementation) section below.
+// Handle successful results
+function handleResult(data: SdkResult) {
+  switch (data.type) {
+    case SdkResultValues.USER_SHARED_CREDENTIALS:
+      console.log('User shared credentials', data);
+      break;
+    case SdkResultValues.USER_OPTED_OUT:
+      console.log('User opted out', data);
+      break;
+    case SdkResultValues.NO_CREDENTIALS_FOUND:
+      console.log('No credentials found', data);
+      break;
+    case SdkResultValues.RISK_SCORE_TOO_HIGH:
+      console.log('Risk score too high', data);
+      break;
+    case SdkResultValues.MAX_INPUT_ATTEMPTS_EXCEEDED:
+      console.log('Max input attempts exceeded', data);
+      break;
+    case SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED:
+      console.log('Max OTP attempts exceeded', data);
+      break;
+  }
+}
+
+// Handle errors
+function handleError(error: SdkError) {
+  console.error('SDK error:', error.reason);
+
+  switch (error.reason) {
+    case SdkErrorReasons.INVALID_SESSION_KEY:
+      // Call POST /sessionKey on server to get a new session key
+      break;
+    case SdkErrorReasons.SESSION_TIMEOUT:
+      // Call POST /sessionKey on server and create new VerifiedClientSdk instance
+      break;
+    case SdkErrorReasons.SHARE_CREDENTIALS_ERROR:
+      // Handle credential sharing error
+      break;
+  }
+}
+
+// Display the SDK in your application
+sdk.show(document.getElementById('sdk-container') as HTMLElement);
+```
 
 ## Module Formats
 
