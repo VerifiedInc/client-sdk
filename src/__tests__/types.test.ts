@@ -14,6 +14,8 @@ describe('SDK Types', () => {
         phone: '1234567890',
         ssn4: '1234',
         ssn4Mismatched: null,
+        fullName: null,
+        fullNameMismatched: null,
         step: 'info',
       };
 
@@ -33,6 +35,8 @@ describe('SDK Types', () => {
         phone: null,
         ssn4: null,
         ssn4Mismatched: null,
+        fullName: null,
+        fullNameMismatched: null,
         step: 'phone',
       };
 

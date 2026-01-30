@@ -4,9 +4,16 @@ type Nullable<T> = {
   [K in keyof T]: T[K] | null;
 };
 
-export type SdkStep = 'consent' | 'phone' | 'verificationCode' | 'birthday' | 'ssn4' | 'info';
+export type SdkStep =
+  | 'consent'
+  | 'phone'
+  | 'verificationCode'
+  | 'birthday'
+  | 'ssn4'
+  | 'firstName'
+  | 'info';
 
-type SdkResultData = {
+export type SdkResultData = {
   identityUuid: string;
   redirectUrl: string | null;
   birthDate: string | null;
@@ -14,6 +21,10 @@ type SdkResultData = {
   phone: string | null;
   ssn4: string | null;
   ssn4Mismatched: boolean | null;
+  fullName: {
+    firstName: string | null;
+  } | null;
+  fullNameMismatched: boolean | null;
   step: SdkStep;
 };
 
