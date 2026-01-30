@@ -1,4 +1,4 @@
-import { ClientMessageEvent, SdkResult, SdkError, SdkStep } from '@sdk/types';
+import { ClientMessageEvent, SdkResult, SdkResultData, SdkError, SdkStep } from '@sdk/types';
 import { SdkErrorReasons, PossibleEventTypes, SdkResultValues } from '@sdk/values';
 
 import { Iframe } from '@sdk/client/iframe/iframe';
@@ -148,6 +148,18 @@ export class IframeEventManager {
     if (typeof data.data.ssn4 !== 'string' && data.data.ssn4 !== null) {
       throw new Error('Invalid ssn4 data');
     }
+
+    if (data.data.fullName !== null) {
+      if (typeof data.data.fullName !== 'object') {
+        throw new Error('Invalid fullName data');
+      }
+
+      for (const [key, value] of Object.entries(data.data.fullName)) {
+        if (typeof value !== 'string' && value !== null) {
+          throw new Error(`Invalid ${key} data`);
+        }
+      }
+    }
   }
 
   /**
@@ -165,6 +177,10 @@ export class IframeEventManager {
       phone: data.data?.phone as string | null,
       ssn4: data.data?.ssn4 as string | null,
       ssn4Mismatched: data.data?.ssn4Mismatched as boolean | null,
+      fullName: (data.data?.fullName
+        ? { firstName: (data.data.fullName as SdkResultData['fullName'])?.firstName }
+        : null) as SdkResultData['fullName'],
+      fullNameMismatched: data.data?.fullNameMismatched as SdkResultData['fullNameMismatched'],
       step: data.data?.step as SdkStep,
     };
   }

@@ -132,6 +132,9 @@ describe('IframeEventManager', () => {
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
+        fullName: {
+          firstName: 'John',
+        },
       },
     } as unknown as ClientMessageEvent;
 
@@ -146,6 +149,9 @@ describe('IframeEventManager', () => {
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
+      fullName: {
+        firstName: 'John',
+      },
     });
   });
 
@@ -160,6 +166,7 @@ describe('IframeEventManager', () => {
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
+        fullName: null,
       },
     } as unknown as ClientMessageEvent;
 
@@ -174,6 +181,7 @@ describe('IframeEventManager', () => {
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
+      fullName: null,
     });
   });
 
@@ -188,6 +196,7 @@ describe('IframeEventManager', () => {
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
+        fullName: null,
       },
     } as unknown as ClientMessageEvent;
 
@@ -202,6 +211,7 @@ describe('IframeEventManager', () => {
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
+      fullName: null,
     });
   });
 
@@ -216,6 +226,7 @@ describe('IframeEventManager', () => {
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
+        fullName: null,
       },
     } as unknown as ClientMessageEvent;
 
@@ -230,6 +241,7 @@ describe('IframeEventManager', () => {
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
+      fullName: null,
     });
   });
 
@@ -244,6 +256,7 @@ describe('IframeEventManager', () => {
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
+        fullName: null,
       },
     } as unknown as ClientMessageEvent;
 
@@ -258,6 +271,7 @@ describe('IframeEventManager', () => {
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
+      fullName: null,
     });
   });
 
@@ -272,6 +286,7 @@ describe('IframeEventManager', () => {
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
+        fullName: null,
       },
     } as unknown as ClientMessageEvent;
 
@@ -286,6 +301,7 @@ describe('IframeEventManager', () => {
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
+      fullName: null,
     });
   });
 
@@ -372,6 +388,7 @@ describe('IframeEventManager', () => {
           birthDate: null,
           phone: null,
           ssn4: null,
+          fullName: null,
         },
         source: EventSource,
         timestamp: Date.now(),
@@ -411,6 +428,7 @@ describe('IframeEventManager', () => {
           birthDate: 'valid-date',
           phone: 'valid-phone',
           ssn4: 'valid-ssn',
+          fullName: null,
         },
         source: EventSource,
         timestamp: Date.now(),
@@ -433,6 +451,7 @@ describe('IframeEventManager', () => {
           birthDate: 'valid-date',
           phone: 'valid-phone',
           ssn4: 'valid-ssn',
+          fullName: null,
         },
         source: EventSource,
         timestamp: Date.now(),
@@ -509,6 +528,55 @@ describe('IframeEventManager', () => {
         // Call the handler that was captured during initialization
         onMessageHandler(mockData);
       }).toThrow('Invalid ssn4 data');
+    });
+
+    describe('fullName', () => {
+      it('should throw error for invalid fullName data', () => {
+        // Arrange
+        const mockData: ClientMessageEvent = {
+          type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT,
+          data: {
+            redirectUrl: 'https://example.com',
+            identityUuid: 'valid-uuid',
+            birthDate: 'valid-date',
+            phone: 'valid-phone',
+            ssn4: 'valid-ssn4',
+            fullName: 123, // Invalid type
+          },
+          source: EventSource,
+          timestamp: Date.now(),
+        };
+
+        // Act & Assert
+        expect(() => {
+          // Call the handler that was captured during initialization
+          onMessageHandler(mockData);
+        }).toThrow('Invalid fullName data');
+      });
+      it('should throw error for invalid fullName.firstName data', () => {
+        // Arrange
+        const mockData: ClientMessageEvent = {
+          type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT,
+          data: {
+            redirectUrl: 'https://example.com',
+            identityUuid: 'valid-uuid',
+            birthDate: 'valid-date',
+            phone: 'valid-phone',
+            ssn4: 'valid-ssn4',
+            fullName: {
+              firstName: 123, // Invalid type
+            },
+          },
+          source: EventSource,
+          timestamp: Date.now(),
+        };
+
+        // Act & Assert
+        expect(() => {
+          // Call the handler that was captured during initialization
+          onMessageHandler(mockData);
+        }).toThrow('Invalid firstName data');
+      });
     });
   });
 });
