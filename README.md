@@ -43,6 +43,9 @@ function handleResult(data: SdkResult) {
     case SdkResultValues.USER_SHARED_CREDENTIALS:
       console.log('User shared credentials', data);
       break;
+    case SdkResultValues.USER_SHARED_HEALTH_DATA:
+      console.log('User shared health data', data);
+      break;
     case SdkResultValues.USER_OPTED_OUT:
       console.log('User opted out', data);
       break;

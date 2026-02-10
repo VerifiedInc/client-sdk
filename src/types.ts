@@ -60,13 +60,19 @@ type SdkResultUserSharedCredentials = {
   type: typeof SdkResultValues.USER_SHARED_CREDENTIALS;
 } & SdkResultData;
 
+export type SdkResultUserSharedHealthData = {
+  type: typeof SdkResultValues.USER_SHARED_HEALTH_DATA;
+  healthDataUuid: string;
+} & SdkResultData;
+
 export type SdkResult =
   | SdkResultUserOptedOut
   | SdkResultNoCredentialsFound
   | SdkResultRiskScoreTooHigh
   | SdkResultMaxInputsAttemptsExceeded
   | SdkResultMaxVerificationCodeAttemptsExceeded
-  | SdkResultUserSharedCredentials;
+  | SdkResultUserSharedCredentials
+  | SdkResultUserSharedHealthData;
 
 export type SdkError = {
   reason: (typeof SdkErrorReasons)[keyof typeof SdkErrorReasons];

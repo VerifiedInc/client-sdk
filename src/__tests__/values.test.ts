@@ -5,6 +5,7 @@ describe('SDK Values', () => {
     it('should have the correct values', () => {
       expect(SdkResultValues).toEqual({
         USER_SHARED_CREDENTIALS: 'USER_SHARED_CREDENTIALS',
+        USER_SHARED_HEALTH_DATA: 'USER_SHARED_HEALTH_DATA',
         USER_OPTED_OUT: 'USER_OPTED_OUT',
         NO_CREDENTIALS_FOUND: 'NO_CREDENTIALS_FOUND',
         RISK_SCORE_TOO_HIGH: 'RISK_SCORE_TOO_HIGH',
@@ -52,6 +53,7 @@ describe('SDK Values', () => {
         VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH: 'VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH',
         VERIFIED_CLIENT_SDK_FORM_SUBMISSION: 'VERIFIED_CLIENT_SDK_FORM_SUBMISSION',
         VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR: 'VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR',
+        VERIFIED_CLIENT_SDK_USER_SHARED_HEALTH_DATA: 'VERIFIED_CLIENT_SDK_USER_SHARED_HEALTH_DATA',
         VERIFIED_CLIENT_SDK_INVALID_SESSION_KEY: 'VERIFIED_CLIENT_SDK_INVALID_SESSION_KEY',
         VERIFIED_CLIENT_SDK_SESSION_TIMEOUT: 'VERIFIED_CLIENT_SDK_SESSION_TIMEOUT',
       });
@@ -67,7 +69,7 @@ describe('SDK Values', () => {
 
   describe('EventSource', () => {
     it('should have the correct value', () => {
-      expect(EventSource).toBe('Verified.Client@1.3.0');
+      expect(EventSource).toBe('Verified.Client@2.0.0');
     });
   });
 });

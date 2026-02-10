@@ -1,4 +1,11 @@
-import { ClientMessageEvent, SdkResult, SdkResultData, SdkError, SdkStep } from '@sdk/types';
+import {
+  ClientMessageEvent,
+  SdkResult,
+  SdkResultData,
+  SdkError,
+  SdkStep,
+  SdkResultUserSharedHealthData,
+} from '@sdk/types';
 import { SdkErrorReasons, PossibleEventTypes, SdkResultValues } from '@sdk/values';
 
 import { Iframe } from '@sdk/client/iframe/iframe';
@@ -61,6 +68,13 @@ export class IframeEventManager {
           type: SdkResultValues.USER_SHARED_CREDENTIALS,
         });
         break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_SHARED_HEALTH_DATA:
+        this.invariantMessageData(data);
+        this.onResult({
+          ...(this.buildMessageData(data) as SdkResultUserSharedHealthData),
+          type: SdkResultValues.USER_SHARED_HEALTH_DATA,
+        });
+        break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND:
         this.invariantMessageData(data);
         this.onResult({
@@ -110,6 +124,7 @@ export class IframeEventManager {
     if (
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION &&
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_SHARED_HEALTH_DATA &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_INPUT_ATTEMPTS_EXCEEDED &&
@@ -135,6 +150,10 @@ export class IframeEventManager {
 
     if (typeof data.data.identityUuid !== 'string' && data.data.identityUuid !== null) {
       throw new Error('Invalid identityUuid data');
+    }
+
+    if (typeof data.data.healthDataUuid !== 'string' && data.data.healthDataUuid !== null) {
+      throw new Error('Invalid healthDataUuid data');
     }
 
     if (typeof data.data.birthDate !== 'string' && data.data.birthDate !== null) {
@@ -172,6 +191,7 @@ export class IframeEventManager {
     return {
       redirectUrl: data.data?.redirectUrl as string | null,
       identityUuid: data.data?.identityUuid as string,
+      healthDataUuid: data.data?.healthDataUuid as string | null,
       birthDate: data.data?.birthDate as string | null,
       birthDateMismatched: data.data?.birthDateMismatched as boolean | null,
       phone: data.data?.phone as string | null,

@@ -19,6 +19,9 @@ function main() {
       case SdkResultValues.USER_SHARED_CREDENTIALS:
         console.log('Verified Client SDK result: User shared credentials', data);
         break;
+      case SdkResultValues.USER_SHARED_HEALTH_DATA:
+        console.log('Verified Client SDK result: User shared health data', data);
+        break;
       case SdkResultValues.USER_OPTED_OUT:
         console.log('Verified Client SDK result: User opted out', data);
         break;
