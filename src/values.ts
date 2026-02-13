@@ -31,4 +31,4 @@ export const PossibleEventTypes = {
   VERIFIED_CLIENT_SDK_SESSION_TIMEOUT: 'VERIFIED_CLIENT_SDK_SESSION_TIMEOUT',
 } as const;
 
-export const EventSource = 'Verified.Client@2.0.0' as const;
+export const EventSource = 'Verified.Client@1.3.0' as const;
