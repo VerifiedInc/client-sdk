@@ -82,6 +82,13 @@ export class IframeEventManager {
           type: SdkResultValues.NO_CREDENTIALS_FOUND,
         });
         break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_INSURANCE_FOUND:
+        this.invariantMessageData(data);
+        this.onResult({
+          ...this.buildMessageData(data),
+          type: SdkResultValues.NO_INSURANCE_FOUND,
+        });
+        break;
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH:
         this.invariantMessageData(data);
         this.onResult({
@@ -126,6 +133,7 @@ export class IframeEventManager {
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_SHARED_HEALTH_DATA &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND &&
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_INSURANCE_FOUND &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_INPUT_ATTEMPTS_EXCEEDED &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED

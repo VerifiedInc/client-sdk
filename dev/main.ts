@@ -37,6 +37,9 @@ function main() {
       case SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED:
         console.log('Verified Client SDK result: Max OTP attempts exceeded', data);
         break;
+      case SdkResultValues.NO_INSURANCE_FOUND:
+        console.log('Verified Client SDK result: No insurance found', data);
+        break;
     }
   }
 

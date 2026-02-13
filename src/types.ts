@@ -44,6 +44,10 @@ type SdkResultNoCredentialsFound = {
   type: typeof SdkResultValues.NO_CREDENTIALS_FOUND;
 } & SdkResultData;
 
+type SdkResultNoInsuranceFound = {
+  type: typeof SdkResultValues.NO_INSURANCE_FOUND;
+} & SdkResultData;
+
 type SdkResultRiskScoreTooHigh = {
   type: typeof SdkResultValues.RISK_SCORE_TOO_HIGH;
 } & SdkResultData;
@@ -68,6 +72,7 @@ export type SdkResultUserSharedHealthData = {
 export type SdkResult =
   | SdkResultUserOptedOut
   | SdkResultNoCredentialsFound
+  | SdkResultNoInsuranceFound
   | SdkResultRiskScoreTooHigh
   | SdkResultMaxInputsAttemptsExceeded
   | SdkResultMaxVerificationCodeAttemptsExceeded
