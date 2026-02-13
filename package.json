@@ -1,6 +1,6 @@
 {
   "name": "@verifiedinc-public/client-sdk",
-  "version": "1.4.0-local125",
+  "version": "1.4.0-local126",
   "description": "An SDK for serving Verified's 1-click service into web applications.",
   "author": "Verified",
   "license": "MIT",
