@@ -1,4 +1,11 @@
-import { ClientMessageEvent, SdkResult, SdkResultData, SdkError, SdkStep } from '@sdk/types';
+import {
+  ClientMessageEvent,
+  SdkResult,
+  SdkResultData,
+  SdkError,
+  SdkEvent,
+  SdkStep,
+} from '@sdk/types';
 import { SdkErrorReasons, PossibleEventTypes, SdkResultValues } from '@sdk/values';
 
 import { Iframe } from '@sdk/client/iframe/iframe';
@@ -13,12 +20,14 @@ export interface IframeEventManagerOptions {
   iframeConfig: IframeConfig;
   onResult: (data: SdkResult) => void;
   onError: (error: SdkError) => void;
+  onEvent: (event: SdkEvent) => void;
 }
 export class IframeEventManager {
   private readonly iframe: Iframe;
   private readonly iframeMessageManager: IframeMessageManager;
   private readonly onResult: (data: SdkResult) => void;
   private readonly onError: (error: SdkError) => void;
+  private readonly onEvent: (event: SdkEvent) => void;
 
   constructor(options: IframeEventManagerOptions) {
     this.iframe = options.iframe;
@@ -29,6 +38,7 @@ export class IframeEventManager {
     });
     this.onResult = options.onResult;
     this.onError = options.onError;
+    this.onEvent = options.onEvent;
   }
 
   addListener() {
@@ -98,6 +108,9 @@ export class IframeEventManager {
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_SESSION_TIMEOUT:
         this.onError({ reason: SdkErrorReasons.SESSION_TIMEOUT });
         break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_EVENT:
+        this.onEvent(data.data as unknown as SdkEvent);
+        break;
     }
   }
 
@@ -113,7 +126,9 @@ export class IframeEventManager {
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_INPUT_ATTEMPTS_EXCEEDED &&
-      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED
+      data.type !==
+        PossibleEventTypes.VERIFIED_CLIENT_SDK_MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED &&
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_EVENT
     ) {
       throw new Error('Invalid message type');
     }

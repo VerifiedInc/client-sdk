@@ -1,4 +1,10 @@
-import { SdkResultValues, SdkErrorReasons, PossibleEventTypes, EventSource } from '@sdk/values';
+import {
+  SdkResultValues,
+  SdkErrorReasons,
+  SdkEventValues,
+  PossibleEventTypes,
+  EventSource,
+} from '@sdk/values';
 
 describe('SDK Values', () => {
   describe('SdkResultValues', () => {
@@ -38,6 +44,24 @@ describe('SDK Values', () => {
     });
   });
 
+  describe('SdkEventValues', () => {
+    it('should have the correct values', () => {
+      expect(SdkEventValues).toEqual({
+        SDK_READY: 'SDK_READY',
+        USER_STEP_CHANGE: 'USER_STEP_CHANGE',
+        STEP_TIME_SPENT: 'STEP_TIME_SPENT',
+        USER_COMPLETED_PRODUCT: 'USER_COMPLETED_PRODUCT',
+        ONE_CLICK_SIGNUP_FORM_SUBMITTED: 'ONE_CLICK_SIGNUP_FORM_SUBMITTED',
+        ONE_CLICK_HEALTH_FORM_SUBMITTED: 'ONE_CLICK_HEALTH_FORM_SUBMITTED',
+      });
+    });
+
+    it('should have readonly properties', () => {
+      const originalValue = SdkEventValues.SDK_READY;
+      expect(originalValue).toBe('SDK_READY');
+    });
+  });
+
   describe('PossibleEventTypes', () => {
     it('should have the correct values', () => {
       expect(PossibleEventTypes).toEqual({
@@ -54,6 +78,7 @@ describe('SDK Values', () => {
         VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR: 'VERIFIED_CLIENT_SDK_FORM_SUBMISSION_ERROR',
         VERIFIED_CLIENT_SDK_INVALID_SESSION_KEY: 'VERIFIED_CLIENT_SDK_INVALID_SESSION_KEY',
         VERIFIED_CLIENT_SDK_SESSION_TIMEOUT: 'VERIFIED_CLIENT_SDK_SESSION_TIMEOUT',
+        VERIFIED_CLIENT_SDK_EVENT: 'VERIFIED_CLIENT_SDK_EVENT',
       });
     });
 

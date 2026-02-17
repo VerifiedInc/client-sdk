@@ -1,4 +1,4 @@
-import { SdkError, SdkResult } from '@sdk/types';
+import { SdkError, SdkEvent, SdkResult } from '@sdk/types';
 import { SdkErrorReasons } from '@sdk/values';
 
 import { ClientOptions, ClientInterface } from '@sdk/client/types';
@@ -17,10 +17,12 @@ export class VerifiedClientSdk implements ClientInterface {
   private destroyed: boolean = false;
   private readonly onResult: (data: SdkResult) => void;
   private readonly onError: (error: SdkError) => void;
+  private readonly onEvent: (event: SdkEvent) => void;
 
   constructor(private options: ClientOptions) {
     this.onResult = options.onResult || (() => {});
     this.onError = options.onError || (() => {});
+    this.onEvent = options.onEvent || (() => {});
 
     this.iframeConfig = new IframeConfig(options.sessionKey, options.environment);
     this.iframe = new Iframe(this.iframeConfig);
@@ -33,6 +35,7 @@ export class VerifiedClientSdk implements ClientInterface {
         this.onResult(...args);
       },
       onError: this.onError,
+      onEvent: this.onEvent,
     });
 
     // Return if the session key is not provided, another instance will have to be created.
