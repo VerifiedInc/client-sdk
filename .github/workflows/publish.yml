@@ -7,7 +7,7 @@ permissions:
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
   releaseJob:
@@ -70,6 +70,17 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
           access: public
 
+      - name: Remove RC versions from npm
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+          RC_VERSIONS=$(npm view @verifiedinc-public/client-sdk versions --json 2>/dev/null | \
+            jq -r '[.] | flatten | .[] | select(startswith("${{ env.RELEASE_VERSION }}-rc."))')
+          while IFS= read -r v; do
+            [ -z "$v" ] && continue
+            npm unpublish "@verifiedinc-public/client-sdk@$v" || \
+              npm deprecate "@verifiedinc-public/client-sdk@$v" "Superseded by stable release ${{ env.RELEASE_VERSION }}"
+          done <<< "$RC_VERSIONS"
+
       # Restore the original README for the repository
       - name: Restore original README
         run: |
@@ -87,7 +98,7 @@ jobs:
         uses: leigholiver/commit-with-deploy-key@v1.0.4
         with:
           source: .
-          commit_message: "[Release ${{ env.RELEASE_VERSION }}] ${{ env.TAG_MESSAGE }}"
+          commit_message: '[Release ${{ env.RELEASE_VERSION }}] ${{ env.TAG_MESSAGE }}'
           destination_repo: verifiedinc/client-sdk
           deploy_key: ${{ secrets.DEPLOY_KEY }}
           git_username: VerifiedIncMachine
