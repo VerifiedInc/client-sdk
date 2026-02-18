@@ -16,7 +16,7 @@ export type SdkStep =
   | 'verificationCode'
   | 'birthday'
   | 'ssn4'
-  | 'firstName'
+  | 'fullName.firstName'
   | 'info';
 
 export type SdkResultData = {
