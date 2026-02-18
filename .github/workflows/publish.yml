@@ -61,7 +61,7 @@ jobs:
       # ref: https://github.community/t/auto-update-package-json-on-publishing/16894
       - name: Update package version
         run: |
-          npm --no-git-tag-version version ${{ env.RELEASE_VERSION }}
+          npm --no-git-tag-version version ${{ env.RELEASE_VERSION }} --allow-same-version
 
       # ref: https://github.com/marketplace/actions/npm-publish
       - name: Github package publish
