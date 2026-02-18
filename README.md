@@ -25,8 +25,10 @@ npm install @verifiedinc-public/client-sdk
 import {
   VerifiedClientSdk,
   SdkResult,
+  SdkEvent,
   SdkError,
   SdkResultValues,
+  SdkEventValues,
   SdkErrorReasons,
 } from '@verifiedinc-public/client-sdk';
 
@@ -35,6 +37,7 @@ const sdk = new VerifiedClientSdk({
   sessionKey: 'YOUR_SESSION_KEY',
   onResult: handleResult,
   onError: handleError,
+  onEvent: handleEvent,
 });
 
 // Handle successful results
@@ -74,6 +77,38 @@ function handleError(error: SdkError) {
       break;
     case SdkErrorReasons.SHARE_CREDENTIALS_ERROR:
       // Handle credential sharing error
+      break;
+  }
+}
+
+// Handle intermediary events
+function handleEvent(event: SdkEvent) {
+  // metadata is always available
+  console.log(event.metadata);
+
+  switch (event.type) {
+    case SdkEventValues.SDK_READY:
+      // Web app rendered the content
+      break;
+    case SdkEventValues.USER_STEP_CHANGE:
+      // User navigated to a new step
+      console.log(event.step, event.previousStep);
+      break;
+    case SdkEventValues.STEP_TIME_SPENT:
+      // User left a step, includes duration
+      console.log(event.step, event.durationMs);
+      break;
+    case SdkEventValues.USER_COMPLETED_PRODUCT:
+      // User completed a product flow
+      console.log(event.product);
+      break;
+    case SdkEventValues.ONE_CLICK_SIGNUP_FORM_SUBMITTED:
+      // Signup form submitted
+      console.log(event.form);
+      break;
+    case SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED:
+      // Health form submitted
+      console.log(event.form);
       break;
   }
 }

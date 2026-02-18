@@ -1,5 +1,11 @@
-import { SdkResult, SdkError, ClientMessageEvent } from '@sdk/types';
-import { SdkResultValues, SdkErrorReasons, PossibleEventTypes, EventSource } from '@sdk/values';
+import { SdkResult, SdkError, SdkEvent, ClientMessageEvent } from '@sdk/types';
+import {
+  SdkResultValues,
+  SdkErrorReasons,
+  SdkEventValues,
+  PossibleEventTypes,
+  EventSource,
+} from '@sdk/values';
 
 describe('SDK Types', () => {
   describe('SdkResult', () => {
@@ -113,6 +119,132 @@ describe('SDK Types', () => {
       // Assert
       expect(event.type).toBe(PossibleEventTypes.VERIFIED_CLIENT_SDK_SESSION_TIMEOUT);
       expect(event.data).toBeNull();
+    });
+  });
+
+  describe('SdkEvent', () => {
+    const metadata = {
+      identityUuid: '123',
+      redirectUrl: 'https://example.com',
+      birthDate: '1990-01-01',
+      birthDateMismatched: null,
+      phone: '1234567890',
+      ssn4: '1234',
+      ssn4Mismatched: null,
+      fullName: null,
+      fullNameMismatched: null,
+      step: 'info' as const,
+    };
+
+    it('should allow creating a valid SDK_READY event', () => {
+      const event: SdkEvent = {
+        type: SdkEventValues.SDK_READY,
+        metadata,
+      };
+
+      expect(event.type).toBe(SdkEventValues.SDK_READY);
+      expect(event.metadata).toEqual(metadata);
+    });
+
+    it('should allow creating a valid USER_STEP_CHANGE event', () => {
+      const event: SdkEvent = {
+        type: SdkEventValues.USER_STEP_CHANGE,
+        metadata,
+        step: 'birthday',
+        previousStep: 'phone',
+      };
+
+      expect(event.type).toBe(SdkEventValues.USER_STEP_CHANGE);
+      expect(event.step).toBe('birthday');
+      expect(event.previousStep).toBe('phone');
+    });
+
+    it('should allow creating a valid USER_STEP_CHANGE event without previousStep', () => {
+      const event: SdkEvent = {
+        type: SdkEventValues.USER_STEP_CHANGE,
+        metadata,
+        step: 'phone',
+      };
+
+      expect(event.type).toBe(SdkEventValues.USER_STEP_CHANGE);
+      expect(event.step).toBe('phone');
+      expect(event).not.toHaveProperty('previousStep');
+    });
+
+    it('should allow creating a valid STEP_TIME_SPENT event', () => {
+      const event: SdkEvent = {
+        type: SdkEventValues.STEP_TIME_SPENT,
+        metadata,
+        step: 'consent',
+        durationMs: 5000,
+      };
+
+      expect(event.type).toBe(SdkEventValues.STEP_TIME_SPENT);
+      expect(event.step).toBe('consent');
+      expect(event.durationMs).toBe(5000);
+    });
+
+    it('should allow creating a valid USER_COMPLETED_PRODUCT event', () => {
+      const event: SdkEvent = {
+        type: SdkEventValues.USER_COMPLETED_PRODUCT,
+        metadata,
+        product: '1-click-signup',
+      };
+
+      expect(event.type).toBe(SdkEventValues.USER_COMPLETED_PRODUCT);
+      expect(event.product).toBe('1-click-signup');
+    });
+
+    it('should allow creating a valid ONE_CLICK_SIGNUP_FORM_SUBMITTED event', () => {
+      const event: SdkEvent = {
+        type: SdkEventValues.ONE_CLICK_SIGNUP_FORM_SUBMITTED,
+        metadata,
+        form: { email: 'test@example.com', firstName: 'John' },
+      };
+
+      expect(event.type).toBe(SdkEventValues.ONE_CLICK_SIGNUP_FORM_SUBMITTED);
+      expect(event.form).toEqual({ email: 'test@example.com', firstName: 'John' });
+    });
+
+    it('should allow creating a valid ONE_CLICK_HEALTH_FORM_SUBMITTED event', () => {
+      const event: SdkEvent = {
+        type: SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED,
+        metadata,
+        form: {
+          healthInsurance: [
+            {
+              memberId: 'M123',
+              payer: {
+                name: 'Aetna',
+                verifiedId: 'P789',
+                logoUrl: 'https://example.com/logo.png',
+              },
+            },
+          ],
+        },
+      };
+
+      expect(event.type).toBe(SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED);
+      expect(event.form.healthInsurance).toHaveLength(1);
+      expect(event.form.healthInsurance[0].memberId).toBe('M123');
+      expect(event.form.healthInsurance[0].payer?.name).toBe('Aetna');
+    });
+
+    it('should allow creating a ONE_CLICK_HEALTH_FORM_SUBMITTED event without payer', () => {
+      const event: SdkEvent = {
+        type: SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED,
+        metadata,
+        form: {
+          healthInsurance: [
+            {
+              memberId: 'M456',
+            },
+          ],
+        },
+      };
+
+      expect(event.form.healthInsurance[0].memberId).toBe('M456');
+      expect(event.form.healthInsurance[0].payer).toBeUndefined();
     });
   });
 });

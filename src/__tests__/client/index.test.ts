@@ -3,7 +3,7 @@ import { SdkErrorReasons } from '@sdk/values';
 import { Iframe } from '@sdk/client/iframe/iframe';
 import { IframeConfig } from '@sdk/client/iframe/iframe-config';
 import { IframeEventManager } from '@sdk/client/iframe/iframe-event-manager';
-import { SdkResultValues } from '@sdk/values';
+import { SdkEventValues, SdkResultValues } from '@sdk/values';
 
 // Mock dependencies
 jest.mock('@sdk/client/iframe/iframe');
@@ -203,6 +203,57 @@ describe('VerifiedClientSdk', () => {
     // Since we're testing the default handler (which is an empty function),
     // we just verify it doesn't throw an error when called
     expect(() => onErrorHandler(mockError)).not.toThrow();
+  });
+
+  it('should call default onEvent if not provided', () => {
+    // Arrange
+    const options = {
+      sessionKey: 'valid-session-key',
+      environment: 'local',
+    };
+
+    // Act
+    new VerifiedClientSdk(options);
+
+    const mockEvent = {
+      type: SdkEventValues.SDK_READY,
+      metadata: {
+        identityUuid: null,
+        redirectUrl: null,
+        birthDate: null,
+        birthDateMismatched: null,
+        phone: null,
+        ssn4: null,
+        ssn4Mismatched: null,
+        fullName: null,
+        fullNameMismatched: null,
+        step: 'phone',
+      },
+    };
+
+    const iframeEventManagerOptions = (IframeEventManager as jest.Mock).mock.calls[0][0];
+    const onEventHandler = iframeEventManagerOptions.onEvent;
+
+    // Assert
+    expect(() => onEventHandler(mockEvent)).not.toThrow();
+  });
+
+  it('should pass onEvent to IframeEventManager', () => {
+    // Arrange
+    const mockOnEvent = jest.fn();
+    const options = {
+      sessionKey: 'valid-session-key',
+      environment: 'local',
+      onEvent: mockOnEvent,
+    };
+
+    // Act
+    new VerifiedClientSdk(options);
+
+    const iframeEventManagerOptions = (IframeEventManager as jest.Mock).mock.calls[0][0];
+
+    // Assert
+    expect(iframeEventManagerOptions.onEvent).toBe(mockOnEvent);
   });
 
   it('should not call onResult if already resulted', () => {

@@ -1,8 +1,10 @@
 import {
   VerifiedClientSdk,
   SdkResult,
+  SdkEvent,
   SdkError,
   SdkResultValues,
+  SdkEventValues,
   SdkErrorReasons,
 } from '@sdk/index';
 
@@ -12,6 +14,7 @@ function main() {
     sessionKey: '17b3fa73-6b88-45e4-835d-2113280e1005',
     onResult: handleResult,
     onError: handleError,
+    onEvent: handleEvent,
   });
 
   function handleResult(data: SdkResult) {
@@ -48,6 +51,31 @@ function main() {
       // Create new VerifiedClientSdk instance
       case SdkErrorReasons.SHARE_CREDENTIALS_ERROR:
       // Do something reasonable
+    }
+  }
+
+  function handleEvent(event: SdkEvent) {
+    console.log(event.metadata);
+
+    switch (event.type) {
+      case SdkEventValues.SDK_READY:
+        console.log('SDK ready');
+        break;
+      case SdkEventValues.USER_STEP_CHANGE:
+        console.log('Step changed:', event.step, 'from:', event.previousStep);
+        break;
+      case SdkEventValues.STEP_TIME_SPENT:
+        console.log('Time spent on step:', event.step, event.durationMs, 'ms');
+        break;
+      case SdkEventValues.USER_COMPLETED_PRODUCT:
+        console.log('Product completed:', event.product);
+        break;
+      case SdkEventValues.ONE_CLICK_SIGNUP_FORM_SUBMITTED:
+        console.log('Signup form submitted:', event.form);
+        break;
+      case SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED:
+        console.log('Health form submitted:', event.form);
+        break;
     }
   }
 

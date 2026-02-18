@@ -1,10 +1,11 @@
-import { SdkError, SdkResult } from '@sdk/types';
+import { SdkError, SdkEvent, SdkResult } from '@sdk/types';
 
 export interface ClientOptions {
   environment?: string;
   sessionKey: string;
   onResult?: (data: SdkResult) => void;
   onError?: (error: SdkError) => void;
+  onEvent?: (event: SdkEvent) => void;
 }
 
 export interface ClientInterface {

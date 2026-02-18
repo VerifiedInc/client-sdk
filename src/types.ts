@@ -1,4 +1,10 @@
-import { EventSource, PossibleEventTypes, SdkErrorReasons, SdkResultValues } from '@sdk/values';
+import {
+  EventSource,
+  PossibleEventTypes,
+  SdkErrorReasons,
+  SdkEventValues,
+  SdkResultValues,
+} from '@sdk/values';
 
 type Nullable<T> = {
   [K in keyof T]: T[K] | null;
@@ -10,7 +16,7 @@ export type SdkStep =
   | 'verificationCode'
   | 'birthday'
   | 'ssn4'
-  | 'firstName'
+  | 'fullName.firstName'
   | 'info';
 
 export type SdkResultData = {
@@ -78,3 +84,76 @@ export interface ClientMessageEvent {
   source: typeof EventSource;
   timestamp: number;
 }
+
+// -- SDK Event types --
+
+export type SdkProduct = '1-click-signup' | '1-click-health';
+
+export type SdkHealthInsurance = {
+  memberId: string;
+  payer?: {
+    name: string;
+    verifiedId: string;
+    logoUrl?: string;
+  };
+};
+
+export type SdkMetadata = {
+  identityUuid: string | null;
+  redirectUrl: string | null;
+  birthDate: string | null;
+  birthDateMismatched: boolean | null;
+  phone: string | null;
+  ssn4: string | null;
+  ssn4Mismatched: boolean | null;
+  fullName: {
+    firstName: string | null;
+  } | null;
+  fullNameMismatched: boolean | null;
+  step: SdkStep;
+};
+
+type SdkEventData<EventData> = {
+  metadata: SdkMetadata;
+} & EventData;
+
+type SdkReadyEvent = {
+  type: typeof SdkEventValues.SDK_READY;
+};
+
+type UserStepChangeEvent = {
+  type: typeof SdkEventValues.USER_STEP_CHANGE;
+  step: SdkStep;
+  previousStep?: SdkStep;
+};
+
+type StepTimeSpentEvent = {
+  type: typeof SdkEventValues.STEP_TIME_SPENT;
+  step: SdkStep;
+  durationMs: number;
+};
+
+type UserCompletedProductEvent = {
+  type: typeof SdkEventValues.USER_COMPLETED_PRODUCT;
+  product: SdkProduct;
+};
+
+type OneClickSignupFormSubmittedEvent = {
+  type: typeof SdkEventValues.ONE_CLICK_SIGNUP_FORM_SUBMITTED;
+  form: Record<string, unknown>;
+};
+
+type OneClickHealthFormSubmittedEvent = {
+  type: typeof SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED;
+  form: { healthInsurance: Array<SdkHealthInsurance> };
+};
+
+type SdkEvents =
+  | SdkReadyEvent
+  | UserStepChangeEvent
+  | StepTimeSpentEvent
+  | UserCompletedProductEvent
+  | OneClickSignupFormSubmittedEvent
+  | OneClickHealthFormSubmittedEvent;
+
+export type SdkEvent = SdkEventData<SdkEvents>;
