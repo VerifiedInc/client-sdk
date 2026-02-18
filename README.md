@@ -113,6 +113,24 @@ npm install
 - `npm run build` - Build for production
 - `npm run type-check` - Run TypeScript type checking
 
+### Publishing a Pre-release
+
+To publish an RC version to npm before merging a PR, comment on the PR:
+
+```
+/prerelease
+```
+
+This triggers a GitHub Actions workflow that builds the package, determines the next RC version based on what's already published (e.g. `1.5.0-rc.0`, `1.5.0-rc.1`, ...), and publishes it under the `rc` dist-tag. The bot will reply with the exact version once published.
+
+Consumers can install it with:
+
+```bash
+npm install @verifiedinc-public/client-sdk@rc
+```
+
+RC versions are automatically removed from npm when the stable release tag is created.
+
 ### Project Structure
 
 ```
