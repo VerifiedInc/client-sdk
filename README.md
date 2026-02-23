@@ -25,8 +25,10 @@ npm install @verifiedinc-public/client-sdk
 import {
   VerifiedClientSdk,
   SdkResult,
+  SdkEvent,
   SdkError,
   SdkResultValues,
+  SdkEventValues,
   SdkErrorReasons,
 } from '@verifiedinc-public/client-sdk';
 
@@ -35,6 +37,7 @@ const sdk = new VerifiedClientSdk({
   sessionKey: 'YOUR_SESSION_KEY',
   onResult: handleResult,
   onError: handleError,
+  onEvent: handleEvent,
 });
 
 // Handle successful results
@@ -81,6 +84,38 @@ function handleError(error: SdkError) {
   }
 }
 
+// Handle intermediary events
+function handleEvent(event: SdkEvent) {
+  // metadata is always available
+  console.log(event.metadata);
+
+  switch (event.type) {
+    case SdkEventValues.SDK_READY:
+      // Web app rendered the content
+      break;
+    case SdkEventValues.USER_STEP_CHANGE:
+      // User navigated to a new step
+      console.log(event.step, event.previousStep);
+      break;
+    case SdkEventValues.STEP_TIME_SPENT:
+      // User left a step, includes duration
+      console.log(event.step, event.durationMs);
+      break;
+    case SdkEventValues.USER_COMPLETED_PRODUCT:
+      // User completed a product flow
+      console.log(event.product);
+      break;
+    case SdkEventValues.ONE_CLICK_SIGNUP_FORM_SUBMITTED:
+      // Signup form submitted
+      console.log(event.form);
+      break;
+    case SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED:
+      // Health form submitted
+      console.log(event.form);
+      break;
+  }
+}
+
 // Display the SDK in your application
 sdk.show(document.getElementById('sdk-container') as HTMLElement);
 ```
@@ -115,6 +150,24 @@ npm install
 - `npm run test` - Test the project
 - `npm run build` - Build for production
 - `npm run type-check` - Run TypeScript type checking
+
+### Publishing a Pre-release
+
+To publish an RC version to npm before merging a PR, comment on the PR:
+
+```
+/prerelease
+```
+
+This triggers a GitHub Actions workflow that builds the package, determines the next RC version based on what's already published (e.g. `1.5.0-rc.0`, `1.5.0-rc.1`, ...), and publishes it under the `rc` dist-tag. The bot will reply with the exact version once published.
+
+Consumers can install it with:
+
+```bash
+npm install @verifiedinc-public/client-sdk@rc
+```
+
+RC versions are automatically removed from npm when the stable release tag is created.
 
 ### Project Structure
 

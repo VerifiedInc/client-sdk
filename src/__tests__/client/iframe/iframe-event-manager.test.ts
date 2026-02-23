@@ -25,6 +25,7 @@ describe('IframeEventManager', () => {
   let mockIframeMessageManager: jest.Mocked<IframeMessageManager>;
   let mockOnResult: jest.Mock;
   let mockOnError: jest.Mock;
+  let mockOnEvent: jest.Mock;
   let options: IframeEventManagerOptions;
   let eventManager: IframeEventManager;
 
@@ -43,12 +44,14 @@ describe('IframeEventManager', () => {
 
     mockOnResult = jest.fn();
     mockOnError = jest.fn();
+    mockOnEvent = jest.fn();
 
     options = {
       iframe: mockIframe,
       iframeConfig: mockIframeConfig,
       onResult: mockOnResult,
       onError: mockOnError,
+      onEvent: mockOnEvent,
     };
 
     eventManager = new IframeEventManager(options);
@@ -391,6 +394,38 @@ describe('IframeEventManager', () => {
     expect(mockOnError).toHaveBeenCalledWith({ reason: SdkErrorReasons.SESSION_TIMEOUT });
   });
 
+  it('should handle SDK event and forward to onEvent', () => {
+    // Arrange
+    const mockHandleMessage = (IframeMessageManager as jest.Mock).mock.calls[0][0].onMessage;
+    const eventData = {
+      type: 'USER_STEP_CHANGE',
+      metadata: {
+        identityUuid: '123',
+        redirectUrl: null,
+        birthDate: null,
+        birthDateMismatched: null,
+        phone: '1234567890',
+        ssn4: null,
+        ssn4Mismatched: null,
+        fullName: null,
+        fullNameMismatched: null,
+        step: 'phone',
+      },
+      step: 'birthday',
+      previousStep: 'phone',
+    };
+    const mockEvent = {
+      type: PossibleEventTypes.VERIFIED_CLIENT_SDK_EVENT,
+      data: eventData,
+    } as unknown as ClientMessageEvent;
+
+    // Act
+    mockHandleMessage(mockEvent);
+
+    // Assert
+    expect(mockOnEvent).toHaveBeenCalledWith(eventData);
+  });
+
   // Tests for validation logic through the public interface
   describe('Message validation', () => {
     let onMessageHandler: (event: ClientMessageEvent) => void;
@@ -402,12 +437,14 @@ describe('IframeEventManager', () => {
       // Create a new instance with fresh mocks
       mockOnResult = jest.fn();
       mockOnError = jest.fn();
+      mockOnEvent = jest.fn();
 
       options = {
         iframe: mockIframe,
         iframeConfig: mockIframeConfig,
         onResult: mockOnResult,
         onError: mockOnError,
+        onEvent: mockOnEvent,
       };
 
       // Capture the onMessage handler that will be passed to IframeMessageManager
