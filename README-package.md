@@ -45,11 +45,17 @@ function handleResult(data: SdkResult) {
     case SdkResultValues.USER_SHARED_CREDENTIALS:
       console.log('User shared credentials', data);
       break;
+    case SdkResultValues.USER_SHARED_HEALTH_DATA:
+      console.log('User shared health data', data);
+      break;
     case SdkResultValues.USER_OPTED_OUT:
       console.log('User opted out', data);
       break;
     case SdkResultValues.NO_CREDENTIALS_FOUND:
       console.log('No credentials found', data);
+      break;
+    case SdkResultValues.NO_INSURANCE_FOUND:
+      console.log('No insurance found', data);
       break;
     case SdkResultValues.RISK_SCORE_TOO_HIGH:
       console.log('Risk score too high', data);

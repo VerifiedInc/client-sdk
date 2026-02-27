@@ -132,6 +132,7 @@ describe('IframeEventManager', () => {
       data: {
         redirectUrl: 'https://example.com',
         identityUuid: '123',
+        healthDataUuid: null,
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
@@ -149,6 +150,7 @@ describe('IframeEventManager', () => {
       type: SdkResultValues.USER_OPTED_OUT,
       redirectUrl: 'https://example.com',
       identityUuid: '123',
+      healthDataUuid: null,
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
@@ -166,6 +168,7 @@ describe('IframeEventManager', () => {
       data: {
         redirectUrl: 'https://example.com',
         identityUuid: '123',
+        healthDataUuid: null,
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
@@ -181,6 +184,39 @@ describe('IframeEventManager', () => {
       type: SdkResultValues.NO_CREDENTIALS_FOUND,
       redirectUrl: 'https://example.com',
       identityUuid: '123',
+      healthDataUuid: null,
+      birthDate: '1990-01-01',
+      phone: '1234567890',
+      ssn4: '1234',
+      fullName: null,
+    });
+  });
+
+  it('should handle no insurance found event', () => {
+    // Arrange
+    const mockHandleMessage = (IframeMessageManager as jest.Mock).mock.calls[0][0].onMessage;
+    const mockEvent = {
+      type: PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_INSURANCE_FOUND,
+      data: {
+        redirectUrl: 'https://example.com',
+        identityUuid: '123',
+        healthDataUuid: null,
+        birthDate: '1990-01-01',
+        phone: '1234567890',
+        ssn4: '1234',
+        fullName: null,
+      },
+    } as unknown as ClientMessageEvent;
+
+    // Act
+    mockHandleMessage(mockEvent);
+
+    // Assert
+    expect(mockOnResult).toHaveBeenCalledWith({
+      type: SdkResultValues.NO_INSURANCE_FOUND,
+      redirectUrl: 'https://example.com',
+      identityUuid: '123',
+      healthDataUuid: null,
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
@@ -196,6 +232,7 @@ describe('IframeEventManager', () => {
       data: {
         redirectUrl: 'https://example.com',
         identityUuid: '123',
+        healthDataUuid: null,
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
@@ -211,6 +248,7 @@ describe('IframeEventManager', () => {
       type: SdkResultValues.RISK_SCORE_TOO_HIGH,
       redirectUrl: 'https://example.com',
       identityUuid: '123',
+      healthDataUuid: null,
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
@@ -226,6 +264,7 @@ describe('IframeEventManager', () => {
       data: {
         redirectUrl: 'https://example.com',
         identityUuid: '123',
+        healthDataUuid: null,
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
@@ -241,6 +280,7 @@ describe('IframeEventManager', () => {
       type: SdkResultValues.MAX_INPUT_ATTEMPTS_EXCEEDED,
       redirectUrl: 'https://example.com',
       identityUuid: '123',
+      healthDataUuid: null,
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
@@ -256,6 +296,7 @@ describe('IframeEventManager', () => {
       data: {
         redirectUrl: 'https://example.com',
         identityUuid: '123',
+        healthDataUuid: null,
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
@@ -271,6 +312,7 @@ describe('IframeEventManager', () => {
       type: SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED,
       redirectUrl: 'https://example.com',
       identityUuid: '123',
+      healthDataUuid: null,
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
@@ -286,6 +328,7 @@ describe('IframeEventManager', () => {
       data: {
         redirectUrl: 'https://example.com',
         identityUuid: '123',
+        healthDataUuid: null,
         birthDate: '1990-01-01',
         phone: '1234567890',
         ssn4: '1234',
@@ -301,6 +344,39 @@ describe('IframeEventManager', () => {
       type: SdkResultValues.USER_SHARED_CREDENTIALS,
       redirectUrl: 'https://example.com',
       identityUuid: '123',
+      healthDataUuid: null,
+      birthDate: '1990-01-01',
+      phone: '1234567890',
+      ssn4: '1234',
+      fullName: null,
+    });
+  });
+
+  it('should handle user shared health data event', () => {
+    // Arrange
+    const mockHandleMessage = (IframeMessageManager as jest.Mock).mock.calls[0][0].onMessage;
+    const mockEvent = {
+      type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_SHARED_HEALTH_DATA,
+      data: {
+        redirectUrl: 'https://example.com',
+        identityUuid: '123',
+        healthDataUuid: 'health-data-123',
+        birthDate: '1990-01-01',
+        phone: '1234567890',
+        ssn4: '1234',
+        fullName: null,
+      },
+    } as unknown as ClientMessageEvent;
+
+    // Act
+    mockHandleMessage(mockEvent);
+
+    // Assert
+    expect(mockOnResult).toHaveBeenCalledWith({
+      type: SdkResultValues.USER_SHARED_HEALTH_DATA,
+      redirectUrl: 'https://example.com',
+      identityUuid: '123',
+      healthDataUuid: 'health-data-123',
       birthDate: '1990-01-01',
       phone: '1234567890',
       ssn4: '1234',
@@ -357,6 +433,7 @@ describe('IframeEventManager', () => {
       type: 'USER_STEP_CHANGE',
       metadata: {
         identityUuid: '123',
+        healthDataUuid: null,
         redirectUrl: null,
         birthDate: null,
         birthDateMismatched: null,
@@ -422,6 +499,7 @@ describe('IframeEventManager', () => {
         data: {
           redirectUrl: 'https://example.com',
           identityUuid: 'test-uuid',
+          healthDataUuid: null,
           birthDate: null,
           phone: null,
           ssn4: null,
@@ -462,6 +540,7 @@ describe('IframeEventManager', () => {
         data: {
           redirectUrl: 123, // Invalid type
           identityUuid: 'valid-uuid',
+          healthDataUuid: null,
           birthDate: 'valid-date',
           phone: 'valid-phone',
           ssn4: 'valid-ssn',
@@ -501,6 +580,30 @@ describe('IframeEventManager', () => {
       }).toThrow('Invalid identityUuid data');
     });
 
+    it('should throw error for invalid healthDataUuid data', () => {
+      // Arrange
+      const mockData: ClientMessageEvent = {
+        type: PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_SHARED_HEALTH_DATA,
+        data: {
+          redirectUrl: 'https://example.com',
+          identityUuid: 'valid-uuid',
+          birthDate: 'valid-date',
+          phone: 'valid-phone',
+          ssn4: 'valid-ssn4',
+          fullName: null,
+          healthDataUuid: 123, // Invalid type
+        },
+        source: EventSource,
+        timestamp: Date.now(),
+      };
+
+      // Act & Assert
+      expect(() => {
+        // Call the handler that was captured during initialization
+        onMessageHandler(mockData);
+      }).toThrow('Invalid healthDataUuid data');
+    });
+
     it('should throw error for invalid birthDate data', () => {
       // Arrange
       const mockData: ClientMessageEvent = {
@@ -508,6 +611,7 @@ describe('IframeEventManager', () => {
         data: {
           redirectUrl: 'https://example.com',
           identityUuid: 'valid-uuid',
+          healthDataUuid: null,
           birthDate: 123, // Invalid type
           phone: 'valid-phone',
           ssn4: 'valid-ssn',
@@ -530,6 +634,7 @@ describe('IframeEventManager', () => {
         data: {
           redirectUrl: 'https://example.com',
           identityUuid: 'valid-uuid',
+          healthDataUuid: null,
           birthDate: 'valid-date',
           phone: 123, // Invalid type
           ssn4: 'valid-ssn',
@@ -552,6 +657,7 @@ describe('IframeEventManager', () => {
         data: {
           redirectUrl: 'https://example.com',
           identityUuid: 'valid-uuid',
+          healthDataUuid: null,
           birthDate: 'valid-date',
           phone: 'valid-phone',
           ssn4: 123, // Invalid type
@@ -575,6 +681,7 @@ describe('IframeEventManager', () => {
           data: {
             redirectUrl: 'https://example.com',
             identityUuid: 'valid-uuid',
+            healthDataUuid: null,
             birthDate: 'valid-date',
             phone: 'valid-phone',
             ssn4: 'valid-ssn4',
@@ -597,6 +704,7 @@ describe('IframeEventManager', () => {
           data: {
             redirectUrl: 'https://example.com',
             identityUuid: 'valid-uuid',
+            healthDataUuid: null,
             birthDate: 'valid-date',
             phone: 'valid-phone',
             ssn4: 'valid-ssn4',
