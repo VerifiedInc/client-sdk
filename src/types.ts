@@ -102,9 +102,9 @@ export type SdkProduct = '1-click-signup' | '1-click-health';
 
 export type SdkHealthInsurance = {
   memberId: string;
-  payer?: {
+  payer: {
     name: string;
-    verifiedId: string;
+    verifiedId?: string;
     logoUrl?: string;
   };
 };
@@ -156,7 +156,7 @@ type OneClickSignupFormSubmittedEvent = {
 
 type OneClickHealthFormSubmittedEvent = {
   type: typeof SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED;
-  form: { healthInsurance: Array<SdkHealthInsurance> };
+  form: { healthInsurance: SdkHealthInsurance };
 };
 
 type SdkEvents =
