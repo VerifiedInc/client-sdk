@@ -211,40 +211,22 @@ describe('SDK Types', () => {
         type: SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED,
         metadata,
         form: {
-          healthInsurance: [
-            {
-              memberId: 'M123',
-              payer: {
-                name: 'Aetna',
-                verifiedId: 'P789',
-                logoUrl: 'https://example.com/logo.png',
-              },
+          healthInsurance: {
+            memberId: 'M123',
+            payer: {
+              name: 'Aetna',
+              verifiedId: 'P789',
+              logoUrl: 'https://example.com/logo.png',
             },
-          ],
+          },
         },
       };
 
       expect(event.type).toBe(SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED);
-      expect(event.form.healthInsurance).toHaveLength(1);
-      expect(event.form.healthInsurance[0].memberId).toBe('M123');
-      expect(event.form.healthInsurance[0].payer?.name).toBe('Aetna');
-    });
-
-    it('should allow creating a ONE_CLICK_HEALTH_FORM_SUBMITTED event without payer', () => {
-      const event: SdkEvent = {
-        type: SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED,
-        metadata,
-        form: {
-          healthInsurance: [
-            {
-              memberId: 'M456',
-            },
-          ],
-        },
-      };
-
-      expect(event.form.healthInsurance[0].memberId).toBe('M456');
-      expect(event.form.healthInsurance[0].payer).toBeUndefined();
+      if (event.type === SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED) {
+        expect(event.form.healthInsurance.memberId).toBe('M123');
+        expect(event.form.healthInsurance.payer.name).toBe('Aetna');
+      }
     });
   });
 });
