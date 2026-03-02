@@ -98,7 +98,7 @@ export interface ClientMessageEvent {
 
 // -- SDK Event types --
 
-export type SdkProduct = '1-click-signup' | '1-click-health';
+export type SdkProduct = '1-click-signup' | '1-click-health' | '1-click-verify';
 
 export type SdkHealthInsurance = {
   memberId: string;
