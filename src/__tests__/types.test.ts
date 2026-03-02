@@ -223,10 +223,16 @@ describe('SDK Types', () => {
       };
 
       expect(event.type).toBe(SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED);
-      if (event.type === SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED) {
-        expect(event.form.healthInsurance.memberId).toBe('M123');
-        expect(event.form.healthInsurance.payer.name).toBe('Aetna');
-      }
+      expect(event.form).toEqual({
+        healthInsurance: {
+          memberId: 'M123',
+          payer: {
+            name: 'Aetna',
+            verifiedId: 'P789',
+            logoUrl: 'https://example.com/logo.png',
+          },
+        },
+      });
     });
   });
 });
