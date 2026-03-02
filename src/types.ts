@@ -150,12 +150,17 @@ type OneClickHealthFormSubmittedEvent = {
   form: Record<string, unknown>;
 };
 
+type VerificationCodeResentEvent = {
+  type: typeof SdkEventValues.VERIFICATION_CODE_RESENT;
+};
+
 type SdkEvents =
   | SdkReadyEvent
   | UserStepChangeEvent
   | StepTimeSpentEvent
   | UserCompletedProductEvent
   | OneClickSignupFormSubmittedEvent
-  | OneClickHealthFormSubmittedEvent;
+  | OneClickHealthFormSubmittedEvent
+  | VerificationCodeResentEvent;
 
 export type SdkEvent = SdkEventData<SdkEvents>;
