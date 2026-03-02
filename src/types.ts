@@ -100,15 +100,6 @@ export interface ClientMessageEvent {
 
 export type SdkProduct = '1-click-signup' | '1-click-health' | '1-click-verify';
 
-export type SdkHealthInsurance = {
-  memberId: string;
-  payer: {
-    name: string;
-    verifiedId?: string;
-    logoUrl?: string;
-  };
-};
-
 export type SdkMetadata = {
   identityUuid: string | null;
   redirectUrl: string | null;
@@ -156,7 +147,7 @@ type OneClickSignupFormSubmittedEvent = {
 
 type OneClickHealthFormSubmittedEvent = {
   type: typeof SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED;
-  form: { healthInsurance: SdkHealthInsurance };
+  form: Record<string, unknown>;
 };
 
 type SdkEvents =
