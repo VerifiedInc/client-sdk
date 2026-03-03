@@ -22,6 +22,9 @@ function main() {
       case SdkResultValues.USER_SHARED_CREDENTIALS:
         console.log('Verified Client SDK result: User shared credentials', data);
         break;
+      case SdkResultValues.USER_SHARED_HEALTH_DATA:
+        console.log('Verified Client SDK result: User shared health data', data);
+        break;
       case SdkResultValues.USER_OPTED_OUT:
         console.log('Verified Client SDK result: User opted out', data);
         break;
@@ -36,6 +39,9 @@ function main() {
         break;
       case SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED:
         console.log('Verified Client SDK result: Max OTP attempts exceeded', data);
+        break;
+      case SdkResultValues.NO_INSURANCE_FOUND:
+        console.log('Verified Client SDK result: No insurance found', data);
         break;
     }
   }
