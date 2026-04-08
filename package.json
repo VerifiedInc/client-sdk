@@ -36,18 +36,18 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.11.0",
-    "@typescript-eslint/eslint-plugin": "^8.24.1",
-    "@typescript-eslint/parser": "^8.24.1",
-    "eslint": "^8.56.0",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
+    "eslint": "^10.2.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
     "jest": "^30.0.2",
     "jest-environment-jsdom": "^30.0.2",
     "prettier": "^3.5.1",
     "ts-jest": "^29.4.0",
     "typescript": "^5.3.3",
+    "typescript-eslint": "^8.58.1",
     "vite": "^6.3.5",
     "vite-plugin-dts": "^4.5.0"
   }
