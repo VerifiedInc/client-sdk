@@ -512,7 +512,7 @@ describe('IframeEventManager', () => {
       // Act & Assert
       expect(() => {
         // We need to directly call invariantMessageData to test this specific error
-        // @ts-ignore - Accessing private method for testing
+        // @ts-expect-error - Accessing private method for testing
         eventManager.invariantMessageData(mockData);
       }).toThrow('Invalid message type');
     });
