@@ -191,7 +191,7 @@ describe('Iframe', () => {
       appendChild: jest.fn(),
     } as unknown as HTMLElement;
 
-    let loadCallback: Function = () => {};
+    let loadCallback: any = () => {};
 
     const mockIframeElement = {
       src: '',
