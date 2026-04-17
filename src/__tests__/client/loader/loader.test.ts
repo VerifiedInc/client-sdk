@@ -194,4 +194,43 @@ describe('Loader', () => {
       loader.dispose();
     }).not.toThrow();
   });
+
+  it('should set CSP nonce on style element when meta tag is present', () => {
+    // Arrange
+    const loader = new Loader();
+
+    const mockStyle = {
+      setAttribute: jest.fn(),
+      textContent: '',
+    };
+
+    const mockParent = {
+      appendChild: jest.fn(),
+    };
+
+    (document.createElement as jest.Mock).mockImplementation((tagName) => {
+      if (tagName === 'style') return mockStyle;
+      return {
+        classList: { add: jest.fn() },
+        setAttribute: jest.fn(),
+        style: {},
+        appendChild: jest.fn(),
+      };
+    });
+
+    const querySelectorSpy = jest.spyOn(document, 'querySelector').mockReturnValue({
+      getAttribute: jest.fn().mockReturnValue('loader-nonce-abc'),
+    } as unknown as Element);
+
+    try {
+      // Act
+      loader.make(mockParent as unknown as HTMLElement);
+
+      // Assert
+      expect(querySelectorSpy).toHaveBeenCalledWith('meta[property="csp-nonce"]');
+      expect(mockStyle.setAttribute).toHaveBeenCalledWith('nonce', 'loader-nonce-abc');
+    } finally {
+      querySelectorSpy.mockRestore();
+    }
+  });
 });
