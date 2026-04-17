@@ -99,9 +99,7 @@ export class Loader {
 
     // Add style element with CSP nonce
     const styleElement = document.createElement('style');
-    const nonce = document
-      .querySelector('meta[property="csp-nonce"]')
-      ?.getAttribute('content');
+    const nonce = document.querySelector('meta[property="csp-nonce"]')?.getAttribute('content');
     if (nonce) styleElement.setAttribute('nonce', nonce);
     styleElement.textContent = styles;
     loaderContainer.appendChild(styleElement);

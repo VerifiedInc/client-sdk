@@ -34,9 +34,7 @@ export class Iframe {
   public make(parent: HTMLElement): HTMLIFrameElement {
     // Inject styles via <style> element for CSP compliance
     this.styleElement = document.createElement('style');
-    const nonce = document
-      .querySelector('meta[property="csp-nonce"]')
-      ?.getAttribute('content');
+    const nonce = document.querySelector('meta[property="csp-nonce"]')?.getAttribute('content');
     if (nonce) this.styleElement.setAttribute('nonce', nonce);
     this.styleElement.textContent = iframeStyles;
     document.head.appendChild(this.styleElement);
@@ -59,7 +57,7 @@ export class Iframe {
     iframe.setAttribute('referrerpolicy', 'no-referrer');
     iframe.setAttribute(
       'sandbox',
-      'allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation',
+      'allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation'
     );
 
     // Add load event listener to hide spinner when iframe is loaded
