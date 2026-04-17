@@ -71,8 +71,6 @@ export class Loader {
     const progressContainer = document.createElement('span');
     progressContainer.classList.add('sdk-circular-progress', 'sdk-circular-progress-indeterminate');
     progressContainer.setAttribute('role', 'progressbar');
-    progressContainer.style.width = '40px';
-    progressContainer.style.height = '40px';
 
     // Create SVG element for circular spinner
     this.svgLoader = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -99,8 +97,12 @@ export class Loader {
     const loaderContainer = document.createElement('div');
     loaderContainer.classList.add('sdk-loader-container');
 
-    // Add style element and components to container
+    // Add style element with CSP nonce
     const styleElement = document.createElement('style');
+    const nonce = document
+      .querySelector('meta[property="csp-nonce"]')
+      ?.getAttribute('content');
+    if (nonce) styleElement.setAttribute('nonce', nonce);
     styleElement.textContent = styles;
     loaderContainer.appendChild(styleElement);
 
