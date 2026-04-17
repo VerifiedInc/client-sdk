@@ -9,6 +9,8 @@ jest.mock('@sdk/client/loader/loader');
 describe('Iframe', () => {
   let mockIframeConfig: jest.Mocked<IframeConfig>;
   let mockLoader: jest.Mocked<Loader>;
+  let headAppendChildSpy: jest.SpyInstance;
+  let querySelectorSpy: jest.SpyInstance;
 
   beforeEach(() => {
     // Setup mocks
@@ -30,23 +32,34 @@ describe('Iframe', () => {
           classList: {
             add: jest.fn(),
           },
-          style: {
-            cssText: '',
-          },
           appendChild: jest.fn(),
         } as unknown as HTMLDivElement;
       } else if (tagName === 'iframe') {
         return {
           src: '',
+          classList: { add: jest.fn() },
           setAttribute: jest.fn(),
           addEventListener: jest.fn(),
         } as unknown as HTMLIFrameElement;
+      } else if (tagName === 'style') {
+        return {
+          setAttribute: jest.fn(),
+          textContent: '',
+          remove: jest.fn(),
+        } as unknown as HTMLStyleElement;
       }
     });
+
+    headAppendChildSpy = jest
+      .spyOn(document.head, 'appendChild')
+      .mockImplementation((node) => node);
+    querySelectorSpy = jest.spyOn(document, 'querySelector').mockReturnValue(null);
   });
 
   afterEach(() => {
     jest.resetAllMocks();
+    headAppendChildSpy.mockRestore();
+    querySelectorSpy.mockRestore();
   });
 
   it('should initialize correctly', () => {
@@ -71,10 +84,113 @@ describe('Iframe', () => {
     // Assert
     expect(document.createElement).toHaveBeenCalledWith('div');
     expect(document.createElement).toHaveBeenCalledWith('iframe');
+    expect(document.createElement).toHaveBeenCalledWith('style');
     expect(mockLoader.make).toHaveBeenCalled();
     expect(mockParent.appendChild).toHaveBeenCalled();
     expect(iframe.element).not.toBeNull();
     expect(result).toBe(iframe.element);
+  });
+
+  it('should inject style element into document head with CSP styles', () => {
+    // Arrange
+    const iframe = new Iframe(mockIframeConfig);
+    const mockParent = { appendChild: jest.fn() } as unknown as HTMLElement;
+
+    const mockStyleElement = {
+      setAttribute: jest.fn(),
+      textContent: '',
+      remove: jest.fn(),
+    } as unknown as HTMLStyleElement;
+
+    (document.createElement as jest.Mock).mockImplementation((tagName) => {
+      if (tagName === 'style') return mockStyleElement;
+      if (tagName === 'div') return { classList: { add: jest.fn() }, appendChild: jest.fn() };
+      if (tagName === 'iframe') {
+        return {
+          src: '',
+          classList: { add: jest.fn() },
+          setAttribute: jest.fn(),
+          addEventListener: jest.fn(),
+        };
+      }
+    });
+
+    // Act
+    iframe.make(mockParent);
+
+    // Assert
+    expect(mockStyleElement.textContent).toContain('.sdk-iframe-container');
+    expect(mockStyleElement.textContent).toContain('.sdk-iframe');
+    expect(headAppendChildSpy).toHaveBeenCalledWith(mockStyleElement);
+  });
+
+  it('should set CSP nonce on style element when meta tag is present', () => {
+    // Arrange
+    const iframe = new Iframe(mockIframeConfig);
+    const mockParent = { appendChild: jest.fn() } as unknown as HTMLElement;
+
+    const mockStyleElement = {
+      setAttribute: jest.fn(),
+      textContent: '',
+      remove: jest.fn(),
+    } as unknown as HTMLStyleElement;
+
+    (document.createElement as jest.Mock).mockImplementation((tagName) => {
+      if (tagName === 'style') return mockStyleElement;
+      if (tagName === 'div') return { classList: { add: jest.fn() }, appendChild: jest.fn() };
+      if (tagName === 'iframe') {
+        return {
+          src: '',
+          classList: { add: jest.fn() },
+          setAttribute: jest.fn(),
+          addEventListener: jest.fn(),
+        };
+      }
+    });
+
+    querySelectorSpy.mockReturnValue({
+      getAttribute: jest.fn().mockReturnValue('test-nonce-123'),
+    } as unknown as Element);
+
+    // Act
+    iframe.make(mockParent);
+
+    // Assert
+    expect(querySelectorSpy).toHaveBeenCalledWith('meta[property="csp-nonce"]');
+    expect(mockStyleElement.setAttribute).toHaveBeenCalledWith('nonce', 'test-nonce-123');
+  });
+
+  it('should not set nonce when CSP meta tag is absent', () => {
+    // Arrange
+    const iframe = new Iframe(mockIframeConfig);
+    const mockParent = { appendChild: jest.fn() } as unknown as HTMLElement;
+
+    const mockStyleElement = {
+      setAttribute: jest.fn(),
+      textContent: '',
+      remove: jest.fn(),
+    } as unknown as HTMLStyleElement;
+
+    (document.createElement as jest.Mock).mockImplementation((tagName) => {
+      if (tagName === 'style') return mockStyleElement;
+      if (tagName === 'div') return { classList: { add: jest.fn() }, appendChild: jest.fn() };
+      if (tagName === 'iframe') {
+        return {
+          src: '',
+          classList: { add: jest.fn() },
+          setAttribute: jest.fn(),
+          addEventListener: jest.fn(),
+        };
+      }
+    });
+
+    querySelectorSpy.mockReturnValue(null);
+
+    // Act
+    iframe.make(mockParent);
+
+    // Assert
+    expect(mockStyleElement.setAttribute).not.toHaveBeenCalledWith('nonce', expect.anything());
   });
 
   it('should set iframe attributes correctly', () => {
@@ -86,6 +202,7 @@ describe('Iframe', () => {
 
     const mockIframeElement = {
       src: '',
+      classList: { add: jest.fn() },
       setAttribute: jest.fn(),
       addEventListener: jest.fn(),
     } as unknown as HTMLIFrameElement;
@@ -94,11 +211,16 @@ describe('Iframe', () => {
       if (tagName === 'div') {
         return {
           classList: { add: jest.fn() },
-          style: { cssText: '' },
           appendChild: jest.fn(),
         } as unknown as HTMLDivElement;
       } else if (tagName === 'iframe') {
         return mockIframeElement;
+      } else if (tagName === 'style') {
+        return {
+          setAttribute: jest.fn(),
+          textContent: '',
+          remove: jest.fn(),
+        } as unknown as HTMLStyleElement;
       }
     });
 
@@ -107,10 +229,13 @@ describe('Iframe', () => {
 
     // Assert
     expect(mockIframeElement.src).toBe(mockIframeConfig.url.toString());
+    expect(mockIframeElement.classList.add).toHaveBeenCalledWith('sdk-iframe');
     expect(mockIframeElement.setAttribute).toHaveBeenCalledWith('title', 'Client SDK Iframe');
     expect(mockIframeElement.setAttribute).toHaveBeenCalledWith('security', 'restricted');
     expect(mockIframeElement.setAttribute).toHaveBeenCalledWith('loading', 'eager');
     expect(mockIframeElement.setAttribute).toHaveBeenCalledWith('referrerpolicy', 'no-referrer');
+    expect(mockIframeElement.setAttribute).toHaveBeenCalledWith('sandbox', expect.any(String));
+    expect(mockIframeElement.setAttribute).not.toHaveBeenCalledWith('style', expect.any(String));
     expect(mockIframeElement.addEventListener).toHaveBeenCalledWith('load', expect.any(Function));
   });
 
@@ -184,6 +309,38 @@ describe('Iframe', () => {
     expect(iframe.loader).toBeNull();
   });
 
+  it('should remove injected style element on dispose', () => {
+    // Arrange
+    const iframe = new Iframe(mockIframeConfig);
+    const mockParent = { appendChild: jest.fn() } as unknown as HTMLElement;
+
+    const mockStyleElement = {
+      setAttribute: jest.fn(),
+      textContent: '',
+      remove: jest.fn(),
+    } as unknown as HTMLStyleElement;
+
+    (document.createElement as jest.Mock).mockImplementation((tagName) => {
+      if (tagName === 'style') return mockStyleElement;
+      if (tagName === 'div') return { classList: { add: jest.fn() }, appendChild: jest.fn() };
+      if (tagName === 'iframe') {
+        return {
+          src: '',
+          classList: { add: jest.fn() },
+          setAttribute: jest.fn(),
+          addEventListener: jest.fn(),
+        };
+      }
+    });
+
+    // Act
+    iframe.make(mockParent);
+    iframe.dispose();
+
+    // Assert
+    expect(mockStyleElement.remove).toHaveBeenCalled();
+  });
+
   it('should handle iframe load event', () => {
     // Arrange
     const iframe = new Iframe(mockIframeConfig);
@@ -195,6 +352,7 @@ describe('Iframe', () => {
 
     const mockIframeElement = {
       src: '',
+      classList: { add: jest.fn() },
       setAttribute: jest.fn(),
       addEventListener: jest.fn().mockImplementation((event, callback) => {
         if (event === 'load') {
@@ -207,11 +365,16 @@ describe('Iframe', () => {
       if (tagName === 'div') {
         return {
           classList: { add: jest.fn() },
-          style: { cssText: '' },
           appendChild: jest.fn(),
         } as unknown as HTMLDivElement;
       } else if (tagName === 'iframe') {
         return mockIframeElement;
+      } else if (tagName === 'style') {
+        return {
+          setAttribute: jest.fn(),
+          textContent: '',
+          remove: jest.fn(),
+        } as unknown as HTMLStyleElement;
       }
     });
 
