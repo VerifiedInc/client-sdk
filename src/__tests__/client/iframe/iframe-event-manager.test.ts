@@ -427,7 +427,7 @@ describe('IframeEventManager', () => {
         redirectUrl: 'https://example.com',
         phone: '1234567890',
         verificationUuid: 'verification-123',
-      }),
+      })
     );
   });
 
