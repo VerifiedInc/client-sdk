@@ -3,7 +3,7 @@ import { OptedOutEvent, OptedOutEventHandleData } from '@sdk/client/iframe/event
 // Silence the JSDOM navigation errors
 const originalConsoleError = console.error;
 beforeAll(() => {
-  console.error = (...args: unknown[]) => {
+  console.error = (...args: unknown[]): void => {
     // Filter out the JSDOM navigation errors
     if (args[0] && args[0].toString().includes('Not implemented: navigation')) {
       return;

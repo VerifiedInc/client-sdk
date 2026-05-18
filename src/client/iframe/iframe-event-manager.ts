@@ -43,11 +43,11 @@ export class IframeEventManager {
     this.onEvent = options.onEvent;
   }
 
-  addListener() {
+  addListener(): void {
     this.iframeMessageManager.addListener();
   }
 
-  removeListener() {
+  removeListener(): void {
     this.iframeMessageManager.removeListener();
   }
 
@@ -143,7 +143,7 @@ export class IframeEventManager {
    *
    * @param data - The message data to validate
    */
-  private invariantMessageData(data: ClientMessageEvent) {
+  private invariantMessageData(data: ClientMessageEvent): void {
     if (
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION &&
@@ -218,7 +218,7 @@ export class IframeEventManager {
    * @param data - The ClientMessageEvent received from the iframe
    * @returns The message data
    */
-  private buildMessageData(data: ClientMessageEvent) {
+  private buildMessageData(data: ClientMessageEvent): SdkResultData {
     return {
       redirectUrl: data.data?.redirectUrl as string | null,
       identityUuid: data.data?.identityUuid as string,

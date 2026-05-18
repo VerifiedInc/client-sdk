@@ -20,16 +20,16 @@ export class VerifiedClientSdk implements ClientInterface {
   private readonly onEvent: (event: SdkEvent) => void;
 
   constructor(private options: ClientOptions) {
-    this.onResult = options.onResult || (() => {});
-    this.onError = options.onError || (() => {});
-    this.onEvent = options.onEvent || (() => {});
+    this.onResult = options.onResult || ((): void => {});
+    this.onError = options.onError || ((): void => {});
+    this.onEvent = options.onEvent || ((): void => {});
 
     this.iframeConfig = new IframeConfig(options.sessionKey, options.environment);
     this.iframe = new Iframe(this.iframeConfig);
     this.iframeEventManager = new IframeEventManager({
       iframe: this.iframe,
       iframeConfig: this.iframeConfig,
-      onResult: (...args) => {
+      onResult: (...args): void => {
         if (this.resulted) return;
         this.resulted = true;
         this.onResult(...args);
