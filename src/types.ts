@@ -17,10 +17,15 @@ export type SdkStep =
   | 'birthday'
   | 'ssn4'
   | 'fullName.firstName'
-  | 'info';
+  | 'info'
+  | 'healthManualInput'
+  | 'healthDataLoading'
+  | 'healthInfo';
 
 export type SdkResultData = {
+  healthDataUuid: string | null;
   identityUuid: string;
+  verificationUuid: string | null;
   redirectUrl: string | null;
   birthDate: string | null;
   birthDateMismatched: boolean | null;
@@ -75,6 +80,12 @@ export type SdkResultUserSharedHealthData = {
   healthDataUuid: string;
 } & SdkResultData;
 
+export type SdkResultUserPhoneVerified = {
+  type: typeof SdkResultValues.USER_PHONE_VERIFIED;
+  identityUuid: never;
+  verificationUuid: string;
+} & Omit<SdkResultData, 'identityUuid'>;
+
 export type SdkResult =
   | SdkResultUserOptedOut
   | SdkResultNoCredentialsFound
@@ -83,7 +94,8 @@ export type SdkResult =
   | SdkResultMaxInputsAttemptsExceeded
   | SdkResultMaxVerificationCodeAttemptsExceeded
   | SdkResultUserSharedCredentials
-  | SdkResultUserSharedHealthData;
+  | SdkResultUserSharedHealthData
+  | SdkResultUserPhoneVerified;
 
 export type SdkError = {
   reason: (typeof SdkErrorReasons)[keyof typeof SdkErrorReasons];

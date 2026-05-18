@@ -66,7 +66,7 @@ export class Loader {
   private svgLoader: SVGElement | null = null;
   private loaderContainer: HTMLElement | null = null;
 
-  make(parent: HTMLElement) {
+  make(parent: HTMLElement): void {
     // Create container span for circular progress
     const progressContainer = document.createElement('span');
     progressContainer.classList.add('sdk-circular-progress', 'sdk-circular-progress-indeterminate');
@@ -110,7 +110,7 @@ export class Loader {
     this.loaderContainer = loaderContainer;
   }
 
-  dispose() {
+  dispose(): void {
     if (this.loaderContainer) {
       this.loaderContainer?.remove();
     }

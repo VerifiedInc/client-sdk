@@ -6,6 +6,7 @@ import {
   SdkEvent,
   SdkStep,
   SdkResultUserSharedHealthData,
+  SdkResultUserPhoneVerified,
 } from '@sdk/types';
 import { SdkErrorReasons, PossibleEventTypes, SdkResultValues } from '@sdk/values';
 
@@ -42,11 +43,11 @@ export class IframeEventManager {
     this.onEvent = options.onEvent;
   }
 
-  addListener() {
+  addListener(): void {
     this.iframeMessageManager.addListener();
   }
 
-  removeListener() {
+  removeListener(): void {
     this.iframeMessageManager.removeListener();
   }
 
@@ -79,6 +80,14 @@ export class IframeEventManager {
           type: SdkResultValues.USER_SHARED_HEALTH_DATA,
         });
         break;
+      case PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_PHONE_VERIFIED: {
+        this.invariantMessageData(data);
+        this.onResult({
+          ...(this.buildMessageData(data) as unknown as SdkResultUserPhoneVerified),
+          type: SdkResultValues.USER_PHONE_VERIFIED,
+        });
+        break;
+      }
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND:
         this.invariantMessageData(data);
         this.onResult({
@@ -134,11 +143,12 @@ export class IframeEventManager {
    *
    * @param data - The message data to validate
    */
-  private invariantMessageData(data: ClientMessageEvent) {
+  private invariantMessageData(data: ClientMessageEvent): void {
     if (
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_OPTED_OUT &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_SHARED_HEALTH_DATA &&
+      data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_USER_PHONE_VERIFIED &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_CREDENTIALS_FOUND &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_NO_INSURANCE_FOUND &&
       data.type !== PossibleEventTypes.VERIFIED_CLIENT_SDK_RISK_SCORE_TOO_HIGH &&
@@ -173,6 +183,10 @@ export class IframeEventManager {
       throw new Error('Invalid healthDataUuid data');
     }
 
+    if (typeof data.data.verificationUuid !== 'string' && data.data.verificationUuid !== null) {
+      throw new Error('Invalid verificationUuid data');
+    }
+
     if (typeof data.data.birthDate !== 'string' && data.data.birthDate !== null) {
       throw new Error('Invalid birthDate data');
     }
@@ -204,11 +218,12 @@ export class IframeEventManager {
    * @param data - The ClientMessageEvent received from the iframe
    * @returns The message data
    */
-  private buildMessageData(data: ClientMessageEvent) {
+  private buildMessageData(data: ClientMessageEvent): SdkResultData {
     return {
       redirectUrl: data.data?.redirectUrl as string | null,
       identityUuid: data.data?.identityUuid as string,
       healthDataUuid: data.data?.healthDataUuid as string | null,
+      verificationUuid: data.data?.verificationUuid as string | null,
       birthDate: data.data?.birthDate as string | null,
       birthDateMismatched: data.data?.birthDateMismatched as boolean | null,
       phone: data.data?.phone as string | null,

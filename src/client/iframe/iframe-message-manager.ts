@@ -23,11 +23,11 @@ export class IframeMessageManager {
     this.iframe = iframe;
   }
 
-  addListener() {
+  addListener(): void {
     window.addEventListener('message', this.handleMessage);
   }
 
-  removeListener() {
+  removeListener(): void {
     window.removeEventListener('message', this.handleMessage);
   }
 
@@ -37,7 +37,7 @@ export class IframeMessageManager {
    * @param event - The MessageEvent received from the iframe
    * @returns
    */
-  private handleMessage = (event: MessageEvent) => {
+  private handleMessage = (event: MessageEvent): void => {
     const data = parseMessageEvent(event);
 
     // Return if the event is not valid
