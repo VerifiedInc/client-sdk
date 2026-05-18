@@ -22,6 +22,7 @@ describe('SDK Types', () => {
         ssn4Mismatched: null,
         fullName: null,
         fullNameMismatched: null,
+        verificationUuid: null,
         step: 'info',
       };
 
@@ -43,6 +44,7 @@ describe('SDK Types', () => {
         ssn4Mismatched: null,
         fullName: null,
         fullNameMismatched: null,
+        verificationUuid: null,
         step: 'phone',
       };
 
