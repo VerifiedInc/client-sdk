@@ -84,9 +84,8 @@ export type SdkResultUserSharedHealthData = {
 
 export type SdkResultUserPhoneVerified = {
   type: typeof SdkResultValues.USER_PHONE_VERIFIED;
-  identityUuid: never;
   verificationUuid: string;
-} & Omit<SdkResultData, 'identityUuid'>;
+} & SdkResultData;
 
 export type SdkResult =
   | SdkResultUserOptedOut
