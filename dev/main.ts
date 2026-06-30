@@ -11,7 +11,7 @@ import {
 function main() {
   const sdk = new VerifiedClientSdk({
     environment: 'local',
-    sessionKey: '17b3fa73-6b88-45e4-835d-2113280e1005',
+    sessionKey: '2965ec88-1f4f-400b-8e21-ae1afcae4e06',
     onResult: handleResult,
     onError: handleError,
     onEvent: handleEvent,
@@ -67,7 +67,7 @@ function main() {
   }
 
   function handleEvent(event: SdkEvent) {
-    console.log(event.metadata);
+    console.log('Verified Client SDK event', event.type, event.metadata);
 
     switch (event.type) {
       case SdkEventValues.SDK_READY:
