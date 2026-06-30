@@ -51,12 +51,15 @@ function main() {
 
     switch (error.reason) {
       case SdkErrorReasons.INVALID_SESSION_KEY:
-      // Call POST /sessionKey on server
+        // Call POST /sessionKey on server
+        break;
       case SdkErrorReasons.SESSION_TIMEOUT:
-      // Call POST /sessionKey on server
-      // Create new VerifiedClientSdk instance
+        // Call POST /sessionKey on server
+        // Create new VerifiedClientSdk instance
+        break;
       case SdkErrorReasons.SHARE_CREDENTIALS_ERROR:
-      // Do something reasonable
+        // Do something reasonable
+        break;
     }
   }
 

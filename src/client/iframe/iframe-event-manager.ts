@@ -5,6 +5,7 @@ import {
   SdkError,
   SdkEvent,
   SdkStep,
+  SdkResultUserSharedCredentials,
   SdkResultUserSharedHealthData,
   SdkResultUserPhoneVerified,
 } from '@sdk/types';
@@ -69,7 +70,7 @@ export class IframeEventManager {
       case PossibleEventTypes.VERIFIED_CLIENT_SDK_FORM_SUBMISSION:
         this.invariantMessageData(data);
         this.onResult({
-          ...this.buildMessageData(data),
+          ...(this.buildMessageData(data) as SdkResultUserSharedCredentials),
           type: SdkResultValues.USER_SHARED_CREDENTIALS,
         });
         break;
@@ -221,7 +222,7 @@ export class IframeEventManager {
   private buildMessageData(data: ClientMessageEvent): SdkResultData {
     return {
       redirectUrl: data.data?.redirectUrl as string | null,
-      identityUuid: data.data?.identityUuid as string,
+      identityUuid: data.data?.identityUuid as string | null,
       healthDataUuid: data.data?.healthDataUuid as string | null,
       verificationUuid: data.data?.verificationUuid as string | null,
       birthDate: data.data?.birthDate as string | null,

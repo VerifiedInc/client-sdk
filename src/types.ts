@@ -24,7 +24,7 @@ export type SdkStep =
 
 export type SdkResultData = {
   healthDataUuid: string | null;
-  identityUuid: string;
+  identityUuid: string | null;
   verificationUuid: string | null;
   redirectUrl: string | null;
   birthDate: string | null;
@@ -71,8 +71,9 @@ type SdkResultMaxVerificationCodeAttemptsExceeded = {
   type: typeof SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED;
 } & SdkResultData;
 
-type SdkResultUserSharedCredentials = {
+export type SdkResultUserSharedCredentials = {
   type: typeof SdkResultValues.USER_SHARED_CREDENTIALS;
+  identityUuid: string;
 } & SdkResultData;
 
 export type SdkResultUserSharedHealthData = {
