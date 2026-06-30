@@ -19,6 +19,9 @@ function main() {
 
   function handleResult(data: SdkResult) {
     switch (data.type) {
+      case SdkResultValues.USER_PHONE_VERIFIED:
+        console.log('Verified Client SDK result: User phone verified', data);
+        break;
       case SdkResultValues.USER_SHARED_CREDENTIALS:
         console.log('Verified Client SDK result: User shared credentials', data);
         break;

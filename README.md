@@ -43,6 +43,9 @@ const sdk = new VerifiedClientSdk({
 // Handle successful results
 function handleResult(data: SdkResult) {
   switch (data.type) {
+    case SdkResultValues.USER_PHONE_VERIFIED:
+      console.log('User phone verified', data);
+      break;
     case SdkResultValues.USER_SHARED_CREDENTIALS:
       console.log('User shared credentials', data);
       break;
