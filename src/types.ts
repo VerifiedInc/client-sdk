@@ -12,6 +12,7 @@ type Nullable<T> = {
 
 export type SdkStep =
   | 'consent'
+  | 'autoPhone'
   | 'phone'
   | 'verificationCode'
   | 'birthday'
