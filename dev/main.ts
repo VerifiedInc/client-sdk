@@ -11,7 +11,7 @@ import {
 function main() {
   const sdk = new VerifiedClientSdk({
     environment: 'local',
-    sessionKey: '17b3fa73-6b88-45e4-835d-2113280e1005',
+    sessionKey: '2965ec88-1f4f-400b-8e21-ae1afcae4e06',
     onResult: handleResult,
     onError: handleError,
     onEvent: handleEvent,
@@ -19,6 +19,9 @@ function main() {
 
   function handleResult(data: SdkResult) {
     switch (data.type) {
+      case SdkResultValues.USER_PHONE_VERIFIED:
+        console.log('Verified Client SDK result: User phone verified', data);
+        break;
       case SdkResultValues.USER_SHARED_CREDENTIALS:
         console.log('Verified Client SDK result: User shared credentials', data);
         break;
@@ -51,17 +54,20 @@ function main() {
 
     switch (error.reason) {
       case SdkErrorReasons.INVALID_SESSION_KEY:
-      // Call POST /sessionKey on server
+        // Call POST /sessionKey on server
+        break;
       case SdkErrorReasons.SESSION_TIMEOUT:
-      // Call POST /sessionKey on server
-      // Create new VerifiedClientSdk instance
+        // Call POST /sessionKey on server
+        // Create new VerifiedClientSdk instance
+        break;
       case SdkErrorReasons.SHARE_CREDENTIALS_ERROR:
-      // Do something reasonable
+        // Do something reasonable
+        break;
     }
   }
 
   function handleEvent(event: SdkEvent) {
-    console.log(event.metadata);
+    console.log('Verified Client SDK event', event.type, event.metadata);
 
     switch (event.type) {
       case SdkEventValues.SDK_READY:

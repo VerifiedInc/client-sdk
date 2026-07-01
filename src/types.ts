@@ -12,15 +12,21 @@ type Nullable<T> = {
 
 export type SdkStep =
   | 'consent'
+  | 'autoPhone'
   | 'phone'
   | 'verificationCode'
   | 'birthday'
   | 'ssn4'
   | 'fullName.firstName'
-  | 'info';
+  | 'info'
+  | 'healthManualInput'
+  | 'healthDataLoading'
+  | 'healthInfo';
 
 export type SdkResultData = {
-  identityUuid: string;
+  healthDataUuid: string | null;
+  identityUuid: string | null;
+  verificationUuid: string | null;
   redirectUrl: string | null;
   birthDate: string | null;
   birthDateMismatched: boolean | null;
@@ -66,13 +72,19 @@ type SdkResultMaxVerificationCodeAttemptsExceeded = {
   type: typeof SdkResultValues.MAX_VERIFICATION_CODE_ATTEMPTS_EXCEEDED;
 } & SdkResultData;
 
-type SdkResultUserSharedCredentials = {
+export type SdkResultUserSharedCredentials = {
   type: typeof SdkResultValues.USER_SHARED_CREDENTIALS;
+  identityUuid: string;
 } & SdkResultData;
 
 export type SdkResultUserSharedHealthData = {
   type: typeof SdkResultValues.USER_SHARED_HEALTH_DATA;
   healthDataUuid: string;
+} & SdkResultData;
+
+export type SdkResultUserPhoneVerified = {
+  type: typeof SdkResultValues.USER_PHONE_VERIFIED;
+  verificationUuid: string;
 } & SdkResultData;
 
 export type SdkResult =
@@ -83,7 +95,8 @@ export type SdkResult =
   | SdkResultMaxInputsAttemptsExceeded
   | SdkResultMaxVerificationCodeAttemptsExceeded
   | SdkResultUserSharedCredentials
-  | SdkResultUserSharedHealthData;
+  | SdkResultUserSharedHealthData
+  | SdkResultUserPhoneVerified;
 
 export type SdkError = {
   reason: (typeof SdkErrorReasons)[keyof typeof SdkErrorReasons];
