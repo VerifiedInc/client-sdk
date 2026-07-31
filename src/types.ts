@@ -165,7 +165,13 @@ type OneClickHealthFormSubmittedEvent = {
 
 type OneClickHealthManualInputFormSubmittedEvent = {
   type: typeof SdkEventValues.ONE_CLICK_HEALTH_MANUAL_INPUT_FORM_SUBMITTED;
-  form: Record<string, unknown>;
+  form: {
+    fullName: {
+      firstName: string;
+      lastName: string;
+    };
+    birthDate: string;
+  };
 };
 
 type VerificationCodeResentEvent = {
