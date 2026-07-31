@@ -119,6 +119,10 @@ function handleEvent(event: SdkEvent) {
       // Health form submitted
       console.log(event.form);
       break;
+    case SdkEventValues.ONE_CLICK_HEALTH_MANUAL_INPUT_FORM_SUBMITTED:
+      // Health manual-input form submitted (fullName/birthDate fallback)
+      console.log(event.form);
+      break;
   }
 }
 

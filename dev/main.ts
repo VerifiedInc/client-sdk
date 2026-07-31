@@ -88,6 +88,9 @@ function main() {
       case SdkEventValues.ONE_CLICK_HEALTH_FORM_SUBMITTED:
         console.log('Health form submitted:', event.form);
         break;
+      case SdkEventValues.ONE_CLICK_HEALTH_MANUAL_INPUT_FORM_SUBMITTED:
+        console.log('Health manual-input form submitted:', event.form);
+        break;
     }
   }
 

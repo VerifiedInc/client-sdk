@@ -238,5 +238,19 @@ describe('SDK Types', () => {
         },
       });
     });
+
+    it('should allow creating a valid ONE_CLICK_HEALTH_MANUAL_INPUT_FORM_SUBMITTED event', () => {
+      const event: SdkEvent = {
+        type: SdkEventValues.ONE_CLICK_HEALTH_MANUAL_INPUT_FORM_SUBMITTED,
+        metadata,
+        form: { fullName: { firstName: 'John', lastName: 'Doe' }, birthDate: '1990-01-01' },
+      };
+
+      expect(event.type).toBe(SdkEventValues.ONE_CLICK_HEALTH_MANUAL_INPUT_FORM_SUBMITTED);
+      expect(event.form).toEqual({
+        fullName: { firstName: 'John', lastName: 'Doe' },
+        birthDate: '1990-01-01',
+      });
+    });
   });
 });
