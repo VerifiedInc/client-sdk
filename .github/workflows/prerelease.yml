@@ -1,41 +1,91 @@
 name: Pre-release
 
+# A `/prerelease` PR comment publishes the PR's head commit as an RC. npm rejects trusted-publishing
+# tokens from issue_comment runs, so the comment run only validates and dispatches this same
+# workflow, and the dispatched run publishes. User-controlled values reach shell steps only through
+# environment variables.
+
+run-name: >-
+  ${{ github.event_name == 'workflow_dispatch'
+  && format('Publish RC of PR #{0} at {1}', inputs.pr, inputs.sha)
+  || github.event.issue.title }}
+
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   issue_comment:
     types: [created]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number
+        required: true
+        type: string
+      sha:
+        description: Head commit of the pull request to publish
+        required: true
+        type: string
 
 jobs:
-  prerelease:
-    name: Publish RC to npm
+  request:
+    name: Request RC
     runs-on: ubuntu-latest
     if: |
+      github.event_name == 'issue_comment' &&
       github.event.issue.pull_request &&
       startsWith(github.event.comment.body, '/prerelease') &&
       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: write
+    steps:
+      - name: Dispatch the publish run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.issue.number }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          SHA=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefOid --jq .headRefOid)
+          gh workflow run prerelease.yml --repo "$GITHUB_REPOSITORY" --ref "$DEFAULT_BRANCH" \
+            -f pr="$PR" -f sha="$SHA"
+
+  prerelease:
+    name: Publish RC to npm
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
 
     steps:
-      - name: Get PR branch
-        id: pr
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const pr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-            });
-            core.setOutput('number', context.issue.number);
-            return pr.data.head.ref;
-          result-encoding: string
+      # A dispatch can also be started by hand, so check the PR and commit before building.
+      - name: Validate the dispatch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ inputs.pr }}
+          SHA: ${{ inputs.sha }}
+        run: |
+          if ! [[ "$PR" =~ ^[0-9]+$ && "$SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Invalid inputs: pr must be a number and sha a full commit hash."
+            exit 1
+          fi
+          STATE=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json state,isCrossRepository,headRefOid)
+          if [ "$(echo "$STATE" | jq -r .state)" != "OPEN" ] || [ "$(echo "$STATE" | jq -r .isCrossRepository)" = "true" ]; then
+            echo "::error::PR #$PR must be open and from a branch of this repo."
+            exit 1
+          fi
+          if [ "$(echo "$STATE" | jq -r .headRefOid)" != "$SHA" ]; then
+            echo "::error::PR #$PR has new commits since the request; comment /prerelease again."
+            exit 1
+          fi
 
-      - name: Checkout PR branch
+      - name: Checkout PR commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.pr.outputs.result }}
+          ref: ${{ inputs.sha }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -62,17 +112,22 @@ jobs:
           npm --no-git-tag-version version "${RC_VERSION}"
 
       - name: Publish RC
-        run: npm publish --tag rc --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # This run is on the default branch but builds a PR commit, so provenance would attest the wrong commit.
+        run: npm publish --tag rc --access public --provenance=false
 
       - name: Comment on PR
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: ${{ steps.pr.outputs.number }},
-              body: `✅ Pre-release published: \`@verifiedinc-public/client-sdk@${{ steps.rc.outputs.version }}\`\n\nInstall with:\n\`\`\`\nnpm install @verifiedinc-public/client-sdk@${{ steps.rc.outputs.version }}\n\`\`\``,
-            });
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ inputs.pr }}
+          VERSION: ${{ steps.rc.outputs.version }}
+        run: |
+          BODY=$(cat <<NOTES
+          ✅ Pre-release published: \`@verifiedinc-public/client-sdk@$VERSION\`
+
+          Install with:
+          \`\`\`
+          npm install @verifiedinc-public/client-sdk@$VERSION
+          \`\`\`
+          NOTES
+          )
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$BODY"
